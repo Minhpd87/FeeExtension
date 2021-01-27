@@ -112,7 +112,26 @@ const ContentReact = () => {
       listTK.map((element) => element.TONG_TIEN).reduce((a, b) => a + b)
     );
 
-    const status = item.TRANG_THAI === 1 ? 'Đã khai báo' : 'Không biết';
+    //Case of status
+    let status =
+      item.HAS_BIENLAI === true ? (
+        <span style={{ color: '#28a745' }}>Có Biên lai</span>
+      ) : (
+        <span style={{ color: '#007A99' }}>Chưa có Biên lai</span>
+      );
+
+    //Case of type
+    let type = '';
+    switch (item.LOAI_TK_NP) {
+      case 100:
+        type = <span style={{ color: '#28a745' }}>Hàng container</span>;
+        break;
+      case 101:
+        type = <span style={{ color: '#007A99' }}>Hàng lỏng, rời</span>;
+        break;
+      default:
+        break;
+    }
 
     return (
       <tr>
@@ -126,22 +145,37 @@ const ContentReact = () => {
             Xem
           </a>
         </td>
-        <td className="text-center">1</td>
         <td className="text-center">{item.SO_TK_NOP_PHI}</td>
+        <td className="text-center">{type}</td>
         <td
           className="text-center"
           style={{ color: 'red', fontWeight: 'bold' }}
         >
           {item.SO_TKHQ}
         </td>
-        <td className="text-center">
+        <td className="text-left">
           {item.MA_DV_KHAI_BAO + ' - ' + item.TEN_DN}
         </td>
         <td className="text-center">{status}</td>
         <td className="text-right" style={{ color: 'red', fontWeight: 'bold' }}>
           {item.TONG_TIEN.toLocaleString('vi')}
         </td>
-        {/* <td>{item.index}</td> */}
+        <td>
+          <button
+            title=""
+            class="btn btn-primary btnSearch width100px"
+            onClick={() =>
+              window.open(
+                'http://thuphi.haiphong.gov.vn:8221/in-thong-bao-nop-phi/' +
+                  item.DTOKHAINPID,
+                'example',
+                'width=1200,height=800'
+              )
+            }
+          >
+            In Thông báo
+          </button>
+        </td>
         {/* <td>{item.index}</td> */}
         {/* <td>{item.index}</td> */}
         {/* <td>{item.index}</td> */}
@@ -159,14 +193,14 @@ const ContentReact = () => {
             <thead>
               <tr>
                 <th className="width50px text-center">#</th>
-                <th className="width50px text-center">STT</th>
                 <th className="text-center">TK Nộp Phí</th>
+                <th className="text-center">Loại hình</th>
                 <th className="text-center">TK hải quan</th>
                 <th className="text-center">Doanh nghiệp</th>
-                <th className="text-center">Trạng thái</th>
+                <th className="text-center">Status</th>
                 <th className="text-center">Số tiền</th>
                 <th className="text-center width100px">TB nộp phí</th>
-                <th className="text-center width100px">#</th>
+                <th className="text-center width100px">Biên lai</th>
                 <th className="width50px text-center">
                   <input type="checkbox" name="CHECKBOX_ALL" />
                 </th>
@@ -176,17 +210,16 @@ const ContentReact = () => {
               {listTK.map((item, index) => (
                 <ListItem key={index} item={item} />
               ))}
-              <tr>
+              <tr className="bold">
                 <td className="text-center bold" colSpan="6">
-                  Tổng tiền
+                  Tổng tiền của {listTK.length} bộ là:
                 </td>
                 <td className="text-right">
                   {listTK.length > 0
                     ? listTK
                         .map((element) => element.TONG_TIEN)
-                        .reduce((sum, current) =>
-                          (sum + current).toLocaleString('vi')
-                        )
+                        .reduce((sum, current) => sum + current)
+                        .toLocaleString('vi')
                     : 0}
                 </td>
               </tr>
