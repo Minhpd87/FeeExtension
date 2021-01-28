@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 
 import { printLine } from './modules/print';
+import { decodedTextSpanIntersectsWith } from 'typescript';
 
 console.log('Thu Phi Extension Loaded!');
-console.log('Must reload extension for modifications to take effect.');
 
 // printLine("Using the 'printLine' function from the Print Module");
 
+/*
+! Gett domain from URL for sending request to
+*/
 //URL for sending request
 const apiURL = window.location.hostname;
 
@@ -20,20 +23,24 @@ const correctURL = document.URL.includes('tim-kiem-to-khai-nop-phi')
 const cardBody = document.getElementsByClassName('card-body')[0];
 
 // Main Extension Content
+/**
+ * ! For sending request with verification and cookies info
+ */
 
 axios.defaults.withCredentials = true;
-
 const verificationToken = document.querySelector(
   '[name=__RequestVerificationToken]'
 ).value;
 
-//Test get info
-// getInfo(303749648440);
-
+/**
+ * ! The Components
+ */
 // Components
 const ContentReact = () => {
   const [billNumber, setBill] = useState('');
   const [listTK, setList] = useState([]);
+  const [issueList, setIssue] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   //Function to add ToKhai to List
   //---Handle bill number on change
@@ -54,11 +61,14 @@ const ContentReact = () => {
       }
     } catch {}
 
-    //Getting info
+    /**
+     * ! Getting declaration info
+     */
     //convert soToKhai to form-data for sending POST request
     const data = new FormData();
     data.append('SO_TK', soToKhai);
     try {
+      setLoading(true);
       const response = await axios.post(
         'http://' + apiURL + ':8221/DToKhaiNopPhi/GetThongBaoNP_TaoBienLai/',
         data,
@@ -69,9 +79,16 @@ const ContentReact = () => {
           withCredentials: true,
         }
       );
-      setList(listTK.concat(response.data.DANHSACH));
-      //   console.log(listTK);
-    } catch {}
+      printLine(response);
+      response.data.code !== 1
+        ? alert('Có lỗi xảy ra trong quá trình lấy thông tin!')
+        : setList(listTK.concat(response.data.DANHSACH));
+      if (response !== undefined) setLoading(false);
+      genList();
+    } catch (error) {
+      alert(error.message);
+      // window.location.reload();
+    }
   };
 
   const addTK = (event) => {
@@ -89,12 +106,24 @@ const ContentReact = () => {
     setList(newList);
   };
 
-  //Get Tokhai Index
+  /**
+   * ! Generate list of declaration without receipt
+   */
+  const genList = () => {
+    const tempList = [...listTK];
+    printLine(tempList);
+  };
+
+  /**
+   * ! Getting Index of declaration
+   */
   const getIndex = (khaiNumber) => {
     return listTK.map((element) => element.DTOKHAINPID).indexOf(khaiNumber);
   };
 
-  //Add To Khai component Visual
+  /**
+   * ! Visual for AddToKhai
+   */
   const AddToKhai = () => {
     return (
       <>
@@ -140,17 +169,24 @@ const ContentReact = () => {
               <strong>⌦</strong> Xóa hết
             </button>
           </span>
+          <span style={{ display: 'inline-block' }}>
+            &nbsp;&nbsp;
+            <img
+              src="chrome-extension://napokkcoeacbelfjmfadcdiadcofhdfk/brun.gif"
+              height="64"
+              style={{ display: loading === true ? 'inline-block' : 'none' }}
+            />
+          </span>
         </div>
       </>
     );
   };
 
-  //Visual for List To Khai
+  /**
+   * ! Visual for each declaration number
+   */
   const ListItem = ({ item }) => {
     // console.log(item);
-    console.log(
-      listTK.map((element) => element.TONG_TIEN).reduce((a, b) => a + b)
-    );
 
     //Case of status
     let status = '';
@@ -241,7 +277,8 @@ const ContentReact = () => {
         }
         style={{ fontWeight: 'bold' }}
       >
-        <span style={{ color: '#007A99' }}>{item.MA_TRAM_TP}</span>,
+        <span style={{ color: '#007A99' }}>{item.MA_TRAM_TP}</span>
+        <span style={{ color: 'black' }}>&nbsp;-&nbsp;</span>
         <span style={{ color: '#FF6633' }}>{item.SO_BIEN_LAI}</span>
       </a>
     );
@@ -259,6 +296,11 @@ const ContentReact = () => {
       ) : (
         receiptNumber
       );
+
+    //convert seconds to date
+    const seconds = Number(item.NGAY_TK_HQ.replace(/[^0-9]/g, ''));
+    let dateTK = new Date(0);
+    dateTK.setMilliseconds(seconds);
 
     return (
       <tr>
@@ -281,31 +323,39 @@ const ContentReact = () => {
             </em>
           </a>
         </td>
-        {/* -------------------------------------------- */}
+        {/* -----------------SỐ TỜ KHAI NỘP PHÍ--------------------------- */}
         <td className="text-center">{item.SO_TK_NOP_PHI}</td>
-        {/* -------------------------------------------- */}
+
+        {/* ------------------LOẠI HÀNG-------------------------- */}
         <td className="text-center">{type}</td>
-        {/* -------------------------------------------- */}
+
+        {/* ------------------SỐ TỜ KHAI HẢI QUAN-------------------------- */}
         <td
           className="text-center"
           style={{ color: 'red', fontWeight: 'bold' }}
         >
           {item.SO_TKHQ}
         </td>
-        {/* -------------------------------------------- */}
+
+        {/* ----------------TÊN DOANH NGHIỆP---------------------------- */}
         <td
           className="text-left"
           style={{ fontWeight: 'normal', width: 'auto' }}
         >
           {item.MA_DV_KHAI_BAO + ' - ' + item.TEN_DN}
         </td>
-        {/* -------------------------------------------- */}
+        {/* ------------------NGÀY TỜ KHAI-------------------------- */}
+        <td className="text-center">{dateTK.toLocaleDateString('vi')}</td>
+
+        {/* -------------TRẠNG THÁI BIÊN LAI------------------------------- */}
         <td className="text-center">{status}</td>
-        {/* -------------------------------------------- */}
+
+        {/* -------------SỐ TIỀN------------------------------- */}
         <td className="text-right" style={{ color: 'red', fontWeight: 'bold' }}>
           {item.TONG_TIEN.toLocaleString('vi')}
         </td>
-        {/* -------------------------------------------- */}
+
+        {/* --------------IN THÔNG BÁO NỘP PHÍ------------------------------ */}
         <td className="text-center">
           <button
             title=""
@@ -325,18 +375,25 @@ const ContentReact = () => {
             In TB
           </button>
         </td>
-        {/* -------------------------------------------- */}
+        {/* ------------------BIÊN LAI HOẶC XUẤT BIÊN LAI-------------------------- */}
         <td className="text-center">{blButton}</td>
-        {/* -------------------------------------------- */}
+
+        {/* --------------TRẠNG THÁI XUẤT BIÊN LAI------------------------------ */}
+        <td className="text-center">Status here</td>
+
+        {/* ----------------XÓA TỜ KHAI---------------------------- */}
         <td className="text-center" onClick={() => removeTK(item.DTOKHAINPID)}>
           <a href="#" style={{ color: 'red' }}>
-            <em>Xóa TK</em>
+            <em>Xóa</em>
           </a>
         </td>
       </tr>
     );
   };
 
+  /**
+   * ! The declaration List visual
+   */
   const ListDisplay = () => {
     return (
       <>
@@ -351,19 +408,23 @@ const ContentReact = () => {
                 <th className="text-center">Loại hàng</th>
                 <th className="text-center">TK hải quan</th>
                 <th className="text-center">Doanh nghiệp</th>
+                <th className="text-center">Ngày TK</th>
                 <th className="text-center">Status</th>
                 <th className="text-center">Số tiền</th>
-                <th className="text-center width100px">TB nộp phí</th>
+                <th className="text-center">TB nộp phí</th>
                 <th className="text-center width100px">Biên lai</th>
+                <th className="text-center width200px">Phát hành BL status</th>
                 <th className="text-center">Operation</th>
               </tr>
             </thead>
             <tbody>
+              {/*-------------- DANH SÁCH TỜ KHAI ĐÃ THÊM------------ */}
               {listTK.map((item, index) => (
                 <ListItem key={index} item={item} />
               ))}
+              {/* ------------- TỔNG TIỀN CỦA TOÀN BỘ TỜ KHAI ĐÃ THÊM */}
               <tr className="bold">
-                <td className="text-center bold" colSpan="6">
+                <td className="text-center bold" colSpan="7">
                   Tổng tiền của{' '}
                   <span style={{ color: 'red' }}>{listTK.length}</span> bộ là:
                 </td>
@@ -375,6 +436,19 @@ const ContentReact = () => {
                         .toLocaleString('vi')
                     : 0}
                 </td>
+                <td className="text-center" colSpan="4">
+                  Meow Meow
+                </td>
+              </tr>
+              {/* --------- TỔNG TIỀN CỦA CÁC TỜ KHAI CHƯA CÓ BIÊN LAI */}
+              <tr className="bold" style={{ backgroundColor: '#eee' }}>
+                <td className="text-center-bold" colSpan="7">
+                  Tổng tiền của <span>xxx</span> bộ chưa có biên lai là:
+                </td>
+                <td className="text-right">0</td>
+                <td className="text-center" colSpan="4">
+                  Xuất các tờ khai chưa có BL
+                </td>
               </tr>
             </tbody>
           </table>
@@ -383,7 +457,10 @@ const ContentReact = () => {
     );
   };
 
-  //Main Content
+  /**
+   * ! Main Components
+   */
+
   return (
     <div style={{ display: correctURL }}>
       <div
