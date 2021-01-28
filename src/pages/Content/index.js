@@ -7,6 +7,11 @@ import { decodedTextSpanIntersectsWith } from 'typescript';
 
 console.log('Thu Phi Extension Loaded!');
 
+/**
+ * ! Get extension ID
+ */
+const extensionID = chrome.runtime.id;
+
 // printLine("Using the 'printLine' function from the Print Module");
 
 /*
@@ -39,7 +44,6 @@ const verificationToken = document.querySelector(
 const ContentReact = () => {
   const [billNumber, setBill] = useState('');
   const [listTK, setList] = useState([]);
-  const [issueList, setIssue] = useState([]);
   const [loading, setLoading] = useState(false);
 
   //Function to add ToKhai to List
@@ -84,10 +88,32 @@ const ContentReact = () => {
         ? alert('Có lỗi xảy ra trong quá trình lấy thông tin!')
         : setList(listTK.concat(response.data.DANHSACH));
       if (response !== undefined) setLoading(false);
-      genList();
     } catch (error) {
       alert(error.message);
       // window.location.reload();
+    }
+  };
+
+  /**
+   * ! Get info of a specific declaration number
+   */
+  const getInfo = async (numTK) => {
+    const data = new FormData();
+    data.append('SO_TK', numTK);
+    try {
+      const result = await axios.post(
+        'http://' + apiURL + ':8221/DToKhaiNopPhi/GetThongBaoNP_TaoBienLai/',
+        data,
+        {
+          headers: {
+            __RequestVerificationToken: verificationToken,
+          },
+          withCredentials: true,
+        }
+      );
+      return result.data;
+    } catch (err) {
+      return undefined;
     }
   };
 
@@ -104,14 +130,6 @@ const ContentReact = () => {
     const newList = [...listTK];
     newList.splice(index, 1);
     setList(newList);
-  };
-
-  /**
-   * ! Generate list of declaration without receipt
-   */
-  const genList = () => {
-    const tempList = [...listTK];
-    printLine(tempList);
   };
 
   /**
@@ -135,6 +153,7 @@ const ContentReact = () => {
               onChange={numberChange}
               value={billNumber}
               autoFocus={true}
+              maxLength="12"
               placeholder="Số tờ khai, thông báo nộp phí"
               className="item-search except form-control form-control-sm"
               style={{
@@ -172,13 +191,27 @@ const ContentReact = () => {
           <span style={{ display: 'inline-block' }}>
             &nbsp;&nbsp;
             <img
-              src="chrome-extension://napokkcoeacbelfjmfadcdiadcofhdfk/brun.gif"
+              src={'chrome-extension://' + extensionID + '/brun.gif'}
               height="64"
               style={{ display: loading === true ? 'inline-block' : 'none' }}
             />
           </span>
         </div>
       </>
+    );
+  };
+
+  /**
+   * ! Tao BL
+   */
+  const taoBL = (id) => {
+    window.open(
+      'http://' +
+        apiURL +
+        ':8221/cap-nhat-thong-tin-bien-lai-dien-tu?DTOKHAINP_ID=' +
+        id,
+      'example',
+      'width=1200,height=700'
     );
   };
 
@@ -190,7 +223,33 @@ const ContentReact = () => {
 
     //Case of status
     let status = '';
-    switch (item.TRANG_THAI) {
+    switch (item.TRANG_THAI_BL) {
+      case -2:
+        status = (
+          <span
+            style={{
+              color: '#007A99',
+              fontWeight: 'normal',
+              textAlign: 'left',
+            }}
+          >
+            Code {item.TRANG_THAI_BL} - Xóa để viết lại
+          </span>
+        );
+        break;
+      case 0:
+        status = (
+          <span
+            style={{
+              color: '#007A99',
+              fontWeight: 'normal',
+              textAlign: 'left',
+            }}
+          >
+            Code {item.TRANG_THAI_BL} - Biên lai
+          </span>
+        );
+        break;
       case 1:
         status = (
           <span
@@ -200,7 +259,7 @@ const ContentReact = () => {
               textAlign: 'left',
             }}
           >
-            Code 1 - Đã khai báo
+            Code {item.TRANG_THAI_BL} - Đã khai báo
           </span>
         );
         break;
@@ -213,7 +272,7 @@ const ContentReact = () => {
               textAlign: 'left',
             }}
           >
-            Code 2 - To be read
+            Code {item.TRANG_THAI_BL} - Biên Lai
           </span>
         );
         break;
@@ -226,7 +285,7 @@ const ContentReact = () => {
               textAlign: 'left',
             }}
           >
-            Code 3 - To be read
+            Code {item.TRANG_THAI_BL} - To be read
           </span>
         );
         break;
@@ -239,12 +298,12 @@ const ContentReact = () => {
               textAlign: 'left',
             }}
           >
-            Code 4 - To be read
+            Code {item.TRANG_THAI_BL} - To be read
           </span>
         );
         break;
       default:
-        status = item.TRANG_THAI;
+        status = 'Code is: ' + item.TRANG_THAI_BL;
         break;
     }
 
@@ -279,7 +338,9 @@ const ContentReact = () => {
       >
         <span style={{ color: '#007A99' }}>{item.MA_TRAM_TP}</span>
         <span style={{ color: 'black' }}>&nbsp;-&nbsp;</span>
-        <span style={{ color: '#FF6633' }}>{item.SO_BIEN_LAI}</span>
+        <span style={{ color: '#FF6633' }}>
+          {item.SO_BIEN_LAI.padStart(7, '0')}
+        </span>
       </a>
     );
 
@@ -288,10 +349,11 @@ const ContentReact = () => {
       item.HAS_BIENLAI !== true ? (
         <button
           className="btn btn-success btnPhatHanhBienLaiTheoLo"
-          title="Click để phát hành thông báo"
+          title="Click để tạo Biên lai"
           style={{ width: 'auto', marginRight: '5px' }}
+          onClick={() => taoBL(item.DTOKHAINPID)}
         >
-          <i className="fa fa-paper-plane-o"></i>&nbsp;Xuất BL
+          <i className="fa fa-paper-plane-o"></i>&nbsp;Tạo Biên lai
         </button>
       ) : (
         receiptNumber
@@ -351,8 +413,19 @@ const ContentReact = () => {
         <td className="text-center">{status}</td>
 
         {/* -------------SỐ TIỀN------------------------------- */}
-        <td className="text-right" style={{ color: 'red', fontWeight: 'bold' }}>
+        <td
+          className="text-right"
+          style={{ color: '#dc2f02', fontWeight: 'bold' }}
+        >
           {item.TONG_TIEN.toLocaleString('vi')}
+        </td>
+
+        {/* -------------HÌNH THỨC THANH TOÁN------------------------------- */}
+        <td
+          className="text-center"
+          style={{ color: '#B146C2', fontWeight: 'bold' }}
+        >
+          {item.MA_LOAI_THANH_TOAN}
         </td>
 
         {/* --------------IN THÔNG BÁO NỘP PHÍ------------------------------ */}
@@ -411,6 +484,7 @@ const ContentReact = () => {
                 <th className="text-center">Ngày TK</th>
                 <th className="text-center">Status</th>
                 <th className="text-center">Số tiền</th>
+                <th className="text-center">Hình thức TT</th>
                 <th className="text-center">TB nộp phí</th>
                 <th className="text-center width100px">Biên lai</th>
                 <th className="text-center width200px">Phát hành BL status</th>
@@ -436,18 +510,8 @@ const ContentReact = () => {
                         .toLocaleString('vi')
                     : 0}
                 </td>
-                <td className="text-center" colSpan="4">
+                <td className="text-center" colSpan="5">
                   Meow Meow
-                </td>
-              </tr>
-              {/* --------- TỔNG TIỀN CỦA CÁC TỜ KHAI CHƯA CÓ BIÊN LAI */}
-              <tr className="bold" style={{ backgroundColor: '#eee' }}>
-                <td className="text-center-bold" colSpan="7">
-                  Tổng tiền của <span>xxx</span> bộ chưa có biên lai là:
-                </td>
-                <td className="text-right">0</td>
-                <td className="text-center" colSpan="4">
-                  Xuất các tờ khai chưa có BL
                 </td>
               </tr>
             </tbody>
