@@ -1,11 +1,11 @@
 {
-  "name": "chrome-extension-boilerplate-react",
-  "version": "3.2.1",
-  "description": "A chrome extension boilerplate built with React 17 and Webpack 5",
+  "name": "fee-extension",
+  "version": "1.0.0.0",
+  "description": "This is a basic Chrome Extensionsto help you deal with your shit much easier",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lxieyang/chrome-extension-boilerplate-react.git"
+    "url": "https://github.com/Minhpd87/FeeExtension.git"
   },
   "scripts": {
     "build": "node utils/build.js",
