@@ -8,10 +8,10 @@ This is a basic Chrome Extensionsto help you deal with your shit much easier
 
 This extension features:
 
-- Adding of multiple custom declaration number at a time.
-- Instant open of fee notice page, printing is one step away. (note: valid fee notice only)
-- Allow you to issue multiple receipts at one time.
-- Ideas?
+- Elements' style changes for better recognition of important info.
+- Shorcut keys for creating, saving and issuing invoice.
+- Issuing invoice without popup.
+- Auto add issued invoices to a list for calculating total money of issued invoices.
 
 ## Resources:
 
