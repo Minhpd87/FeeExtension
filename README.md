@@ -9,9 +9,9 @@ This is a basic Chrome Extensionsto help you deal with your shit much easier
 This extension features:
 
 - Elements' style changes for better recognition of important info.
-- Shorcut keys for creating, saving and issuing invoice.
-- Issuing invoice without popup.
-- Auto add issued invoices to a list for calculating total money of issued invoices.
+- Shortcut keys for creating, saving, and issuing invoices.
+- Issuing invoice without a popup.
+- Auto-add issued invoices to a list for calculating the total money of issued invoices.
 
 ## Resources:
 
