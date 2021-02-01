@@ -9,7 +9,11 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "matches": [
+        "http://thuphi.haiphong.gov.vn:8221/*",
+        "http://113.160.97.58:8221/*",
+        "http://10.10.10.20:8221/*"
+      ],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
     }
