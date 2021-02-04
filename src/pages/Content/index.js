@@ -12,7 +12,7 @@ console.log('Thu Phi Extension Loaded!');
  * ! Styled component
  */
 const Button = styled.button`
-  background: #fe5955;
+  background: #006a99;
   border: 1px solid #ccc;
   borderradius: 2px;
   color: white;
@@ -131,10 +131,21 @@ const shorcutKeys = (e) => {
       document.getElementById('testButton').click();
     }
 
-    // Button /
-    if (e.keyCode == 191) {
+    // Button =
+    if (e.keyCode == 187) {
       console.log('One-click clicked');
       document.getElementById('one-click').click();
+    }
+
+    // Button \
+    //Ctrl + \
+    if ((e.ctrlKey && e.keyCode == 220) || e.keyCode == 220) {
+      console.log('Phát hành clicked');
+      document
+        .getElementsByClassName(
+          'btn btn-success mr10px btn-padding btn-issued-invoice pull-left'
+        )[0]
+        .click();
     }
 
     //' Button
@@ -608,32 +619,32 @@ const ContentReact = () => {
    */
   const addTK2 = () => {
     printLine('ADDTK2 CLICKED');
-    const info = {
-      TIME: new Date().toLocaleTimeString(),
-      DTOKHAINPID: document.getElementsByName('DTOKHAINPID')[0].value || '',
-      SO_TK_NOP_PHI: document.getElementById('SO_TK_NOP_PHI').value || '',
-      SO_TKHQ: document.getElementsByName('SO_TK_HQ')[0].value || '',
-      TEN_DN: document.getElementsByName('TEN_DV_KHAI_BAO')[0].value || '',
-      MA_DV_KHAI_BAO: document.getElementById('MA_DV_KHAI_BAO').value || '',
-      MA_LOAI_THANH_TOAN:
-        document.getElementsByName('MA_LOAI_THANH_TOAN')[0].value || '',
-      MA_TRAM_TP: document.getElementById('MA_TRAM_TP').value || '',
-      NGAY_TK_HQ: document.getElementsByName('NGAY_TK_HQTMP')[0].value || '',
-      LOAI_TK_NP: document.getElementsByName('LOAI_TK_NP')[0].value || '',
-      TONG_TIEN:
-        parseInt(
-          document
-            .getElementsByClassName('SHOW_TIEN_TEXT text-right bold')[0]
-            .innerHTML.match(/[0-9]/g)
-            .join('')
-        ) || 0,
-      EINVOICE_LINK:
-        document.getElementsByName('LINK_VIEW_EINVOICE')[0].value || '',
+    // const info = {
+    //   TIME: new Date().toLocaleTimeString(),
+    //   DTOKHAINPID: document.getElementsByName('DTOKHAINPID')[0].value || '',
+    //   SO_TK_NOP_PHI: document.getElementById('SO_TK_NOP_PHI').value || '',
+    //   SO_TKHQ: document.getElementsByName('SO_TK_HQ')[0].value || '',
+    //   TEN_DN: document.getElementsByName('TEN_DV_KHAI_BAO')[0].value || '',
+    //   MA_DV_KHAI_BAO: document.getElementById('MA_DV_KHAI_BAO').value || '',
+    //   MA_LOAI_THANH_TOAN:
+    //     document.getElementsByName('MA_LOAI_THANH_TOAN')[0].value || '',
+    //   MA_TRAM_TP: document.getElementById('MA_TRAM_TP').value || '',
+    //   NGAY_TK_HQ: document.getElementsByName('NGAY_TK_HQTMP')[0].value || '',
+    //   LOAI_TK_NP: document.getElementsByName('LOAI_TK_NP')[0].value || '',
+    //   TONG_TIEN:
+    //     parseInt(
+    //       document
+    //         .getElementsByClassName('SHOW_TIEN_TEXT text-right bold')[0]
+    //         .innerHTML.match(/[0-9]/g)
+    //         .join('')
+    //     ) || 0,
+    //   EINVOICE_LINK:
+    //     document.getElementsByName('LINK_VIEW_EINVOICE')[0].value || '',
 
-      SO_BIEN_LAI: document.getElementsByName('SO_BIEN_LAI')[0].value || '',
-    };
+    //   SO_BIEN_LAI: document.getElementsByName('SO_BIEN_LAI')[0].value || '',
+    // };
 
-    // console.log('INfo is: ', info);
+    console.log('INfo is: ', info);
     let currentList =
       JSON.parse(window.localStorage.getItem('danh_sach')) !== null
         ? JSON.parse(window.localStorage.getItem('danh_sach'))
@@ -662,36 +673,6 @@ const ContentReact = () => {
     data2.append('DBIENLAITPID', id);
 
     let eInvoiceLink = '';
-
-    const billInfo = {
-      TIME: new Date().toLocaleTimeString(),
-      DTOKHAINPID: document.getElementsByName('DTOKHAINPID')[0].value || '',
-      SO_TK_NOP_PHI: document.getElementById('SO_TK_NOP_PHI').value || '',
-      SO_TKHQ: document.getElementsByName('SO_TK_HQ')[0].value || '',
-      TEN_DN: document.getElementsByName('TEN_DV_KHAI_BAO')[0].value || '',
-      MA_DV_KHAI_BAO: document.getElementById('MA_DV_KHAI_BAO').value || '',
-      MA_LOAI_THANH_TOAN:
-        document.getElementsByName('MA_LOAI_THANH_TOAN')[0].value || '',
-      MA_TRAM_TP: document.getElementById('MA_TRAM_TP').value || '',
-      NGAY_TK_HQ: document.getElementsByName('NGAY_TK_HQTMP')[0].value || '',
-      LOAI_TK_NP: document.getElementsByName('LOAI_TK_NP')[0].value || '',
-      TONG_TIEN:
-        parseInt(
-          document
-            .getElementsByClassName('SHOW_TIEN_TEXT text-right bold')[0]
-            .innerHTML.match(/[0-9]/g)
-            .join('')
-        ) || 0,
-      EINVOICE_LINK:
-        eInvoiceLink ||
-        document.getElementsByName('LINK_VIEW_EINVOICE')[0].value,
-      SO_BIEN_LAI:
-        invoiceNum !== null
-          ? invoiceNum
-          : document.getElementsByName('SO_BIEN_LAI')[0].value,
-    };
-
-    console.log(billInfo);
 
     try {
       //Check condition first
@@ -732,7 +713,61 @@ const ContentReact = () => {
                 eInvoiceLink = res.data.EINVOICE_OUT.InvoiceKey;
                 console.log(invoiceNum, eInvoiceLink);
                 setBL(invoiceNum);
-                if (invoiceNum !== null) setLoading(false);
+                if (invoiceNum !== null) {
+                  setLoading(false);
+                  const billInfo = {
+                    TIME: new Date().toLocaleTimeString(),
+                    DTOKHAINPID:
+                      document.getElementsByName('DTOKHAINPID')[0].value || '',
+                    SO_TK_NOP_PHI:
+                      document.getElementById('SO_TK_NOP_PHI').value || '',
+                    SO_TKHQ:
+                      document.getElementsByName('SO_TK_HQ')[0].value || '',
+                    TEN_DN:
+                      document.getElementsByName('TEN_DV_KHAI_BAO')[0].value ||
+                      '',
+                    MA_DV_KHAI_BAO:
+                      document.getElementById('MA_DV_KHAI_BAO').value || '',
+                    MA_LOAI_THANH_TOAN:
+                      document.getElementsByName('MA_LOAI_THANH_TOAN')[0]
+                        .value || '',
+                    MA_TRAM_TP:
+                      document.getElementById('MA_TRAM_TP').value || '',
+                    NGAY_TK_HQ:
+                      document.getElementsByName('NGAY_TK_HQTMP')[0].value ||
+                      '',
+                    LOAI_TK_NP:
+                      document.getElementsByName('LOAI_TK_NP')[0].value || '',
+                    TONG_TIEN:
+                      parseInt(
+                        document
+                          .getElementsByClassName(
+                            'SHOW_TIEN_TEXT text-right bold'
+                          )[0]
+                          .innerHTML.match(/[0-9]/g)
+                          .join('')
+                      ) || 0,
+                    EINVOICE_LINK:
+                      eInvoiceLink ||
+                      document.getElementsByName('LINK_VIEW_EINVOICE')[0].value,
+                    SO_BIEN_LAI:
+                      invoiceNum !== null
+                        ? invoiceNum
+                        : document.getElementsByName('SO_BIEN_LAI')[0].value,
+                  };
+                  console.log(billInfo);
+                  let currentList =
+                    JSON.parse(window.localStorage.getItem('danh_sach')) !==
+                    null
+                      ? JSON.parse(window.localStorage.getItem('danh_sach'))
+                      : [];
+                  // console.log('CurrentList: ', currentList);
+
+                  window.localStorage.setItem(
+                    'danh_sach',
+                    JSON.stringify(currentList.concat(billInfo))
+                  );
+                }
               });
           } else {
             alert(res.data.message);
@@ -789,12 +824,13 @@ const ContentReact = () => {
                 id="one-click"
                 onClick={() => checkCondition()}
                 style={{
-                  visibility:
-                    currentBL.length === 0 &&
-                    document.getElementsByName('SO_BIEN_LAI')[0].value ===
-                      '0000000'
-                      ? ''
-                      : 'hidden',
+                  // display:
+                  //   currentBL.length === 0 &&
+                  //   document.getElementsByName('SO_BIEN_LAI')[0].value ===
+                  //     '0000000'
+                  //     ? ''
+                  //     : 'none',
+                  display: loading === false ? '' : 'none',
                 }}
               >
                 1-Click BL
@@ -808,13 +844,13 @@ const ContentReact = () => {
                 display: currentBL.length === 0 ? 'none' : '',
               }}
             >
-              Số biên lai: <span style={{ color: '#ff6603' }}>{currentBL}</span>
+              Số biên lai: <span style={{ color: 'red' }}>{currentBL}</span>
             </span>
-            <span style={{ color: 'white', fontWeight: 'normal' }}>
+            {/* <span style={{ color: 'white', fontWeight: 'normal' }}>
               <StyledA onClick={() => addTK2()} id="testButton">
                 Test2
               </StyledA>
-            </span>
+            </span> */}
           </span>
         </span>
       );
