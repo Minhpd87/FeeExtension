@@ -123,12 +123,12 @@ const shorcutKeys = (e) => {
     //Ctrl + \
     if ((e.ctrlKey && e.keyCode == 220) || e.keyCode == 220) {
       console.log('Phát hành clicked');
-      // document
-      //   .getElementsByClassName(
-      //     'btn btn-success mr10px btn-padding btn-issued-invoice pull-left'
-      //   )[0]
-      //   .click();
-      document.getElementById('testButton').click();
+      document
+        .getElementsByClassName(
+          'btn btn-success mr10px btn-padding btn-issued-invoice pull-left'
+        )[0]
+        .click();
+      // document.getElementById('testButton').click();
     }
 
     // Button =
@@ -193,12 +193,12 @@ const isURL = document.URL.includes('cap-nhat-thong-tin-bien-lai-dien-tu')
  * ! Disable some uncessary field
  */
 // Ma DN
-try {
-  document.getElementsByName('MA_DN')[0].style.display = 'none';
-  document.getElementsByClassName(
-    'btn btn-success btnPhatHanhBienLaiTheoLo'
-  )[0].style.display = 'none';
-} catch {}
+// try {
+//   document.getElementsByName('MA_DN')[0].style.display = 'none';
+//   document.getElementsByClassName(
+//     'btn btn-success btnPhatHanhBienLaiTheoLo'
+//   )[0].style.display = 'none';
+// } catch {}
 
 const cardBody = document.getElementsByClassName('card-body')[0];
 const capnhatBody = document.getElementsByClassName(
@@ -249,7 +249,7 @@ const ContentReact = () => {
         alert('Tờ khai đã được thêm!');
         return;
       }
-    } catch {}
+    } catch { }
 
     /**
      * ! Getting declaration info
@@ -383,6 +383,7 @@ const ContentReact = () => {
               onClick={() => {
                 setList([]);
                 window.localStorage.removeItem('danh_sach');
+                document.getElementsByName("SO_TK")[0].focus();
               }}
             >
               <strong>⌦</strong> Xóa hết
@@ -418,9 +419,9 @@ const ContentReact = () => {
         onClick={() =>
           window.open(
             'http://' +
-              apiURL +
-              ':8224/Viewer/HoaDonViewer.aspx?mhd=' +
-              item.EINVOICE_LINK,
+            apiURL +
+            ':8224/Viewer/HoaDonViewer.aspx?mhd=' +
+            item.EINVOICE_LINK,
             'example',
             'width=1200,height=800'
           )
@@ -446,9 +447,9 @@ const ContentReact = () => {
             onClick={() =>
               window.open(
                 'http://' +
-                  apiURL +
-                  ':8221/cap-nhat-thong-tin-to-khai/' +
-                  item.DTOKHAINPID,
+                apiURL +
+                ':8221/cap-nhat-thong-tin-to-khai/' +
+                item.DTOKHAINPID,
                 'example',
                 'width=1200,height=800'
               )
@@ -590,9 +591,9 @@ const ContentReact = () => {
                 >
                   {listTK.length > 0
                     ? listTK
-                        .map((element) => element.TONG_TIEN)
-                        .reduce((sum, current) => sum + current)
-                        .toLocaleString('vi')
+                      .map((element) => element.TONG_TIEN)
+                      .reduce((sum, current) => sum + current)
+                      .toLocaleString('vi')
                     : 0}
                 </td>
                 <td className="text-center" colSpan="4">
@@ -662,7 +663,7 @@ const ContentReact = () => {
    */
   const checkCondition = () => {
     // id = DBIENLAI_TPID
-    const id = document.URL.replace('8221', '').match(/[0-9]/g).join('');
+    const id = document.URL.replace('8221', '').match(/[0-9]/g).join('').replace("10101020", "");
     // console.log(id);
     const data = new FormData();
     const data2 = new FormData();
@@ -681,8 +682,8 @@ const ContentReact = () => {
       axios
         .post(
           'http://' +
-            apiURL +
-            ':8221/DBienLaiThuPhi/CheckConditionIssuedInvoice/',
+          apiURL +
+          ':8221/DBienLaiThuPhi/CheckConditionIssuedInvoice/',
           data,
           {
             headers: {
@@ -697,8 +698,8 @@ const ContentReact = () => {
             return axios
               .post(
                 'http://' +
-                  apiURL +
-                  ':8221/DBienLaiThuPhi/CheckConditionIssuedInvoice/',
+                apiURL +
+                ':8221/DBienLaiThuPhi/CheckConditionIssuedInvoice/',
                 data2,
                 {
                   headers: {
@@ -758,7 +759,7 @@ const ContentReact = () => {
                   console.log(billInfo);
                   let currentList =
                     JSON.parse(window.localStorage.getItem('danh_sach')) !==
-                    null
+                      null
                       ? JSON.parse(window.localStorage.getItem('danh_sach'))
                       : [];
                   // console.log('CurrentList: ', currentList);
