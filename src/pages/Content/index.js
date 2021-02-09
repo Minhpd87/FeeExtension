@@ -12,13 +12,14 @@ console.log('Thu Phi Extension Loaded!');
  * ! Styled component
  */
 const Input = styled.input`
-  border: 1px solid #ccc;
-  color: red;
-  width: 100px;
-  margin: 2px;
+  outline: 1px solid #ccc;
+  color: black;
+  width: 50px;
+  margin: 4px;
+  text-align: right;
 
   &:focus {
-    outline: 1px solid #dfdfdf;
+    outline: 1px solid #4f5689;
   }
 `;
 
@@ -69,7 +70,8 @@ color: red !important;
 }
 
 .item {
-  flex-basis: 20%;  
+  font-weight: normal;
+  text-align: left;
 }
  
 input[name="SO_TK_HQ"] {
@@ -1604,52 +1606,59 @@ const ContentReact = () => {
    */
   const MoneyChange = ({ total }) => {
     return (
-      <td colSpan="6">
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-start',
-          }}
-        >
-          <span className="item">
-            <Input placeholder="1.000 đ" />
-            {' 1.000đ'}
-          </span>
-          <span className="item">
-            <Input placeholder="2.000 đ" />
-            {' 2.000đ'}
-          </span>
-          <span className="item">
-            <Input placeholder="5.000 đ" />
-            {' 5.000đ'}
-          </span>
-          <span className="item">
-            <Input placeholder="10.000 đ" />
-            {' 10.000đ'}
-          </span>
-          <span className="item">
-            <Input placeholder="20.000 đ" />
-            {' 20.000đ'}
-          </span>
-          <span className="item">
-            <Input placeholder="50.000 đ" />
-            {' 50.000đ'}
-          </span>
-          <span className="item">
-            <Input placeholder="100.000 đ" />
-            {' 100.000đ'}
-          </span>
-          <span className="item">
-            <Input placeholder="200.000 đ" />
-            {' 200.000đ'}
-          </span>
-          <span className="item">
-            <Input placeholder="500.000 đ" />
-            {' 500.000đ'}
-          </span>
-        </div>
-      </td>
+      <>
+        <td colSpan="8">
+          <div
+            style={{
+              display: 'flex',
+              marginLeft: '5px',
+              marginRight: '5px',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+            }}
+          >
+            <span className="item">
+              <Input />
+              {' x 1.000đ'}
+            </span>
+            <span className="item">
+              <Input />
+              {' x 2.000đ'}
+            </span>
+            <span className="item">
+              <Input />
+              {' x 5.000đ'}
+            </span>
+            <span className="item">
+              <Input />
+              {' x 10.000đ'}
+            </span>
+            <span className="item">
+              <Input />
+              {' x 20.000đ'}
+            </span>
+            <span className="item">
+              <Input />
+              {' x 50.000đ'}
+            </span>
+            <span className="item">
+              <Input />
+              {' x 100.000đ'}
+            </span>
+            <span className="item">
+              <Input />
+              {' x 200.000đ'}
+            </span>
+            <span className="item">
+              <Input />
+              {' x 500.000đ'}
+            </span>
+          </div>
+        </td>
+        <td colSpan="4">
+          <div>Tiền nhận là:</div>
+        </td>
+      </>
     );
   };
 
