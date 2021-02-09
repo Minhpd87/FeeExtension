@@ -334,7 +334,12 @@ const ContentReact = () => {
         <span style={{ display: 'inline-block' }}>
           &nbsp;&nbsp;
           <img
-            src={'chrome-extension://' + extensionID + '/brun.gif'}
+            src={
+              'chrome-extension://' +
+              extensionID +
+              '/' +
+              (Math.floor(Math.random() * 4) + 1 + '.gif')
+            }
             height="64"
             style={{
               display: loadingStatus === true ? 'inline-block' : 'none',
