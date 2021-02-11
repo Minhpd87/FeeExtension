@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 
 import { printLine } from './modules/print';
-import { decodedTextSpanIntersectsWith } from 'typescript';
+// import { decodedTextSpanIntersectsWith } from 'typescript';
 import styled from 'styled-components';
 
 console.log('Thu Phi Extension Loaded!');
@@ -13,13 +13,13 @@ console.log('Thu Phi Extension Loaded!');
  */
 const Input = styled.input`
   outline: 1px solid #ccc;
-  color: black;
+  color: #005ddd;
   width: 50px;
   margin: 4px;
   text-align: right;
 
   &:focus {
-    outline: 1px solid #4f5689;
+    outline: 1px solid #009ddd;
   }
 `;
 
@@ -69,9 +69,23 @@ font-weight: bold !important;
 color: red !important;
 }
 
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    // justify-content: space-between;
+    flex-direction: row;
+}
+
+.grid::after {
+  content:"";
+  flex:auto;
+}
+
 .item {
   font-weight: normal;
   text-align: left;
+  color: #0a043c;
+  flex-basis: 20%;
 }
  
 input[name="SO_TK_HQ"] {
@@ -110,7 +124,49 @@ color: blue;
 text-align: center;
 }
 
+// Tab style
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  // float: left;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom:none;
+  outline: none;
+  cursor: pointer;
+  padding: 8px 25px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  // display: none;
+  padding: 2px 4px;
+  // border: 1px solid #ccc;
+  // border-top: none;
+}
+
+
 .batman {
+  scale: 0.25;
   -webkit-animation-duration: 2s;
   -moz-animation-duration: 2s;
   -ms-animation-duration: 2s;
@@ -1057,6 +1113,7 @@ const shorcutKeys = (e) => {
       document.getElementsByClassName('btn btn-primary btn-primary')[2].click();
     }
 
+    //Button ]
     if ((e.ctrlKey && e.keyCode == 221) || e.keyCode == 221) {
       if (
         document.getElementsByClassName('form-control input-sm')[13].value ==
@@ -1070,6 +1127,13 @@ const shorcutKeys = (e) => {
         .click();
     }
 
+    //Button /
+    if (e.keyCode == 191) {
+      document.getElementById('deleteButton').click();
+      document.getElementsByName('SO_TK')[0].focus();
+      console.log('Delete everthing');
+    }
+
     //Ctrl + \
     if ((e.ctrlKey && e.keyCode == 220) || e.keyCode == 220) {
       console.log('Phát hành clicked');
@@ -1078,24 +1142,12 @@ const shorcutKeys = (e) => {
           'btn btn-success mr10px btn-padding btn-issued-invoice pull-left'
         )[0]
         .click();
-      // document.getElementById('testButton').click();
     }
 
     // Button =
     if (e.keyCode == 187) {
       console.log('One-click clicked');
       document.getElementById('one-click').click();
-    }
-
-    // Button \
-    //Ctrl + \
-    if ((e.ctrlKey && e.keyCode == 220) || e.keyCode == 220) {
-      console.log('Phát hành clicked');
-      document
-        .getElementsByClassName(
-          'btn btn-success mr10px btn-padding btn-issued-invoice pull-left'
-        )[0]
-        .click();
     }
 
     //' Button
@@ -1173,7 +1225,6 @@ const ContentReact = () => {
   const [listTK, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentBL, setBL] = useState('');
-  const [selectedList, setSelected] = useState([]);
 
   /**
    * ! Load current List from Local Storage
@@ -1410,7 +1461,6 @@ const ContentReact = () => {
     return (
       <>
         <div>
-          <p />
           {/* <form onSubmit={addTK} style={{ display: 'inline-block' }}>
             <input
               onClick={() => setBill('')}
@@ -1433,11 +1483,12 @@ const ContentReact = () => {
             </button>
           </form> */}
           <span>
-            <strong style={{ color: 'green' }}>
+            <strong style={{ color: '#001234' }}>
               Danh sách Tờ khai Hải quan đã xuất Biên lai
             </strong>
             &nbsp;&nbsp;
             <Button
+              id="deleteButton"
               onClick={() => {
                 setList([]);
                 window.localStorage.removeItem('danh_sach');
@@ -1604,59 +1655,214 @@ const ContentReact = () => {
   /**
    * ! Tính tiền thừa:
    */
-  const MoneyChange = ({ total }) => {
+  const MoneyChange = () => {
+    /**
+     * ! Money change
+     */
+    let totalAmount = 0;
+    let change = 0;
+    const [money, setMoney] = useState([
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      1000,
+      2000,
+      5000,
+      10000,
+      20000,
+      50000,
+      100000,
+      200000,
+      500000,
+    ]);
+
+    for (let i = 0; i < 9; i++) {
+      totalAmount = totalAmount + money[i] * money[i + 9];
+    }
+
+    const currentMoney =
+      document.getElementById('total_debt') !== null
+        ? parseInt(document.getElementById('total_debt').innerHTML) * 1000
+        : 0;
+
+    change = totalAmount - currentMoney;
+
+    /**
+     * ! Handle Change
+     */
+    const update = (index, new_value) => {
+      const data = [...money];
+      data[index] = new_value;
+      return data;
+    };
+
+    const noteChange = (e) => {
+      const id = e.target.id;
+      const value = parseInt(e.target.value);
+
+      switch (id) {
+        case '1k':
+          setMoney(update(0, value));
+          break;
+        case '2k':
+          setMoney(update(1, value));
+          break;
+        case '5k':
+          setMoney(update(2, value));
+          break;
+        case '10k':
+          setMoney(update(3, value));
+          break;
+        case '20k':
+          setMoney(update(4, value));
+          break;
+        case '50k':
+          setMoney(update(5, value));
+          break;
+        case '100k':
+          setMoney(update(6, value));
+          break;
+        case '200k':
+          setMoney(update(7, value));
+          break;
+        case '500k':
+          setMoney(update(8, value));
+          break;
+        default:
+          break;
+      }
+    };
+
+    const resetInput = (e) => {
+      const id = e.target.id;
+      switch (id) {
+        case '1k':
+          setMoney(update(0, ''));
+          break;
+        case '2k':
+          setMoney(update(1, ''));
+          break;
+        case '5k':
+          setMoney(update(2, ''));
+          break;
+        case '10k':
+          setMoney(update(3, ''));
+          break;
+        case '20k':
+          setMoney(update(4, ''));
+          break;
+        case '50k':
+          setMoney(update(5, ''));
+          break;
+        case '100k':
+          setMoney(update(6, ''));
+          break;
+        case '200k':
+          setMoney(update(7, ''));
+          break;
+        case '500k':
+          setMoney(update(8, ''));
+          break;
+        default:
+      }
+    };
+
     return (
       <>
-        <td colSpan="8">
-          <div
-            style={{
-              display: 'flex',
-              marginLeft: '5px',
-              marginRight: '5px',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-            }}
-          >
+        <td colSpan="6">
+          <div className="grid">
             <span className="item">
-              <Input />
+              <Input onChange={(e) => noteChange(e)} id="1k" value={money[0]} />
               {' x 1.000đ'}
             </span>
             <span className="item">
-              <Input />
+              <Input onChange={(e) => noteChange(e)} id="2k" value={money[1]} />
               {' x 2.000đ'}
             </span>
             <span className="item">
-              <Input />
+              <Input onChange={(e) => noteChange(e)} id="5k" value={money[2]} />
               {' x 5.000đ'}
             </span>
             <span className="item">
-              <Input />
+              <Input
+                onChange={(e) => noteChange(e)}
+                id="10k"
+                value={money[3]}
+              />
               {' x 10.000đ'}
             </span>
             <span className="item">
-              <Input />
+              <Input
+                onChange={(e) => noteChange(e)}
+                id="20k"
+                value={money[4]}
+              />
               {' x 20.000đ'}
             </span>
             <span className="item">
-              <Input />
+              <Input
+                onChange={(e) => noteChange(e)}
+                id="50k"
+                value={money[5]}
+              />
               {' x 50.000đ'}
             </span>
             <span className="item">
-              <Input />
+              <Input
+                onChange={(e) => noteChange(e)}
+                id="100k"
+                value={money[6]}
+              />
               {' x 100.000đ'}
             </span>
             <span className="item">
-              <Input />
+              <Input
+                onChange={(e) => noteChange(e)}
+                id="200k"
+                value={money[7]}
+              />
               {' x 200.000đ'}
             </span>
             <span className="item">
-              <Input />
+              <Input
+                onChange={(e) => noteChange(e)}
+                id="500k"
+                value={money[8]}
+              />
               {' x 500.000đ'}
             </span>
           </div>
         </td>
-        <td colSpan="4">
-          <div>Tiền nhận là:</div>
+        <td>
+          <div style={{ fontWeight: 'bold' }}>Tổng:</div>
+        </td>
+        <td
+          style={{
+            color: '#006a99',
+            borderBottom: '2px solid #ccc',
+            textAlign: 'right',
+            fontWeight: 'bold',
+          }}
+        >
+          <div id="received">{totalAmount.toLocaleString('vi')}</div>
+        </td>
+        <td
+          colSpan="4"
+          style={{
+            fontWeight: 'bold',
+            textAlign: 'center',
+          }}
+        >
+          <div>
+            Trả lại:
+            <span style={{ color: 'red' }}> {change.toLocaleString('vi')}</span>
+          </div>
         </td>
       </>
     );
@@ -1673,7 +1879,6 @@ const ContentReact = () => {
     // console.log(listTK, sortedList);
     return (
       <>
-        <hr></hr>
         <div style={{ height: 'auto', overflow: 'scroll', zIndex: '2' }}>
           <table id="dsTable" className="width100">
             <thead>
@@ -1706,10 +1911,12 @@ const ContentReact = () => {
                   <span style={{ color: 'red' }}>{listTK.length}</span> bộ là:
                 </td>
                 <td
-                  className="text-right"
+                  id="total_debt"
                   style={{
                     color: 'red',
-                    border: '2px solid #ccc',
+                    borderBottom: '2px solid #ccc',
+                    fontWeight: 'bold',
+                    textAlign: 'right',
                   }}
                 >
                   {listTK.length > 0
@@ -1720,7 +1927,14 @@ const ContentReact = () => {
                     : 0}
                 </td>
                 <td className="text-center" colSpan="4">
-                  Meow Meow
+                  <img
+                    src={
+                      'chrome-extension://' +
+                      extensionID +
+                      '/' +
+                      'icon-bat-34.png'
+                    }
+                  />
                 </td>
               </tr>
               {/*-------------- DANH SÁCH TỜ KHAI ĐÃ THÊM------------ */}
@@ -1729,7 +1943,7 @@ const ContentReact = () => {
               ))}
             </tbody>
           </table>
-          <Batman />
+          {/* <Batman /> */}
         </div>
       </>
     );
@@ -1993,6 +2207,68 @@ const ContentReact = () => {
     }
   };
 
+  // const TAB = () => {
+  //   return (
+  //     <>
+  //       {/* Tab Button */}
+  //       <div className="tab">
+  //         <button className="tablinks" onClick={openTab(evt, 'current')}>
+  //           Current
+  //         </button>
+  //         <button className="tablinks" onClick={openTab(evt, 'all')}>
+  //           All
+  //         </button>
+  //       </div>
+  //       {/* Tab Content */}
+  //       <CurrentPayment />
+  //       <All />
+  //     </>
+  //   );
+  // };
+
+  // /**
+  //  * ! Handle open TAB
+  //  */
+  // const openTab = (evt, id) => {
+  //   let i, tabcontent, tablinks;
+  //   try {
+  //     tabcontent = document.getElementsByClassName('tabcontent');
+  //     for (i = 0; i < tabcontent.length; i++) {
+  //       tabcontent[i].style.display = 'none';
+  //     }
+
+  //     // Get all elements with class="tablinks" and remove the class "active"
+  //     tablinks = document.getElementsByClassName('tablinks');
+  //     for (i = 0; i < tablinks.length; i++) {
+  //       tablinks[i].className = tablinks[i].className.replace(' active', '');
+  //     }
+
+  //     // Show the current tab, and add an "active" class to the button that opened the tab
+  //     document.getElementById(id).style.display = 'block';
+  //     evt.currentTarget.className += ' active';
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // };
+
+  const CurrentPayment = () => {
+    return (
+      <div style={{ display: correctURL }} id="current" className="tabcontent">
+        <div>
+          <ListDisplay />
+        </div>
+      </div>
+    );
+  };
+
+  const All = () => {
+    return (
+      <div id="all" className="tabcontent">
+        All content
+      </div>
+    );
+  };
+
   /**
    * ! Main Components
    */
@@ -2003,9 +2279,9 @@ const ContentReact = () => {
         <div
           style={{
             display: 'block',
-            minHeight: '40vh',
+            minHeight: '100vh',
             border: '1px solid #ccc',
-            margin: '1em 0',
+            // margin: '1em 0',
             borderRadius: '2px',
             padding: '5px',
           }}
@@ -2013,7 +2289,7 @@ const ContentReact = () => {
           <strong>Thu phí Extension - </strong>
           <strong style={{ color: 'red' }}>BETA</strong>
           <AddToKhai />
-          <ListDisplay />
+          <CurrentPayment />
         </div>
       </div>
       <CapNhatPage />
