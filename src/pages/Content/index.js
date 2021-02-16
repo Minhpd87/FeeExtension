@@ -11,6 +11,10 @@ console.log('Thu Phi Extension Loaded!');
 /**
  * ! Styled component
  */
+const Key = styled.span`
+  font-weight: bold;
+  color: red;
+`;
 const Input = styled.input`
   outline: 1px solid #ccc;
   color: #005ddd;
@@ -1113,6 +1117,19 @@ const shorcutKeys = (e) => {
       document.getElementsByClassName('btn btn-primary btn-primary')[2].click();
     }
 
+    //Ctrl + B
+    if (e.ctrlKey && e.keyCode == 66) {
+      //Click the element Ctrl + B
+      console.log('Kích hoạt');
+      let currentStatus = window.localStorage.getItem('KichHoat');
+      if (currentStatus !== 'true')
+        window.localStorage.setItem('KichHoat', 'true');
+      if (currentStatus === 'true')
+        window.localStorage.setItem('KichHoat', 'false');
+      //Reload the page
+      window.location.reload();
+    }
+
     //Button ]
     if ((e.ctrlKey && e.keyCode == 221) || e.keyCode == 221) {
       if (
@@ -1225,7 +1242,7 @@ const ContentReact = () => {
   const [listTK, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentBL, setBL] = useState('');
-
+  let enable = null;
   /**
    * ! Load current List from Local Storage
    */
@@ -1236,7 +1253,8 @@ const ContentReact = () => {
         ? JSON.parse(window.localStorage.getItem('danh_sach'))
         : []
     );
-    // console.log(listTK);
+    enable = window.localStorage.getItem('enable');
+    console.log(enable);
   }, []);
 
   //---Get bill number and add it to the array
@@ -1497,6 +1515,10 @@ const ContentReact = () => {
             >
               <strong>⌦</strong> Xóa hết
             </Button>
+            <span style={{ float: 'right' }}>
+              <Key>[</Key>: tạo biên lai - <Key>]</Key>: lưu lại - <Key>=</Key>:
+              1-Click - <Key>'</Key>: barcode - <Key>/</Key>: xoá hết
+            </span>
           </span>
         </div>
       </>
@@ -2274,7 +2296,12 @@ const ContentReact = () => {
    */
 
   return (
-    <>
+    <div
+      style={{
+        display:
+          window.localStorage.getItem('KichHoat') === 'true' ? '' : 'none',
+      }}
+    >
       <div style={{ display: correctURL }}>
         <div
           style={{
@@ -2293,7 +2320,7 @@ const ContentReact = () => {
         </div>
       </div>
       <CapNhatPage />
-    </>
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 {
   "name": "fee-extension",
   "version": "1.0.0",
-  "description": "This is a basic Chrome Extension help you deal with your shit much easier",
+  "description": "Chrome Extension that adds extra features to the thuphi.haiphong.gov.vn's website",
   "license": "MIT",
   "repository": {
     "type": "git",
