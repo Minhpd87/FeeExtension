@@ -5,14 +5,7 @@ import './Popup.css';
 
 const Popup = () => {
   const extensionID = chrome.runtime.id;
-  return (
-    <div>
-      <img
-        src={'chrome-extension://' + extensionID + '/' + 'batman-signal.gif'}
-        style={{ width: 'auto' }}
-      />
-    </div>
-  );
+  return <div>NANANANANANANANANANANANANANANANANANANA</div>;
 };
 
 export default Popup;

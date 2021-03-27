@@ -1,5 +1,5 @@
 {
-  "name": "Fee Extension by F.Minh",
+  "name": "Fee Extension Revamped by F.Minh",
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": "icon-bat-34.png"
@@ -19,17 +19,8 @@
       "css": ["content.styles.css"]
     }
   ],
-  "web_accessible_resources": [
-    "content.styles.css",
-    "icon-bat.png",
-    "icon-bat-128.png",
-    "icon-bat-34.png",
-    "1.gif",
-    "2.gif",
-    "3.gif",
-    "4.gif",
-    "batman-signal.gif"
-  ],
+  "web_accessible_resources": ["/*"],
   "manifest_version": 2,
+  "permissions": ["file:///*"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

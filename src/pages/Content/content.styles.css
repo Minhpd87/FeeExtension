@@ -1,0 +1,71 @@
+body {
+  overflow: hidden !important;
+}
+
+select[name='MA_LOAI_THANH_TOAN'] {
+  font-weight: bold !important;
+  color: red !important;
+}
+
+.grid-row {
+  display: flex;
+  flex-wrap: wrap;
+  /* justify-content: space-between; */
+  flex-direction: row;
+  /* width: 50vw; */
+}
+
+.column {
+  display: flex;
+  flex-direction: row;
+  flex-basis: 100%;
+  flex: 1;
+}
+
+/* .grid-row::after {
+  content: '';
+  flex: auto;
+} */
+
+.item {
+  font-weight: normal;
+  text-align: left;
+  color: #0a043c;
+  flex-basis: 20%;
+}
+
+input[name='SO_TK_HQ'] {
+  font-weight: bold !important;
+  color: red !important;
+}
+
+.SHOW_TIEN_TEXT {
+  font-weight: bold !important;
+  color: red !important;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  padding: 5px;
+  background: #dedede;
+}
+
+[class^='TR_'] :nth-child(5) {
+  font-weight: bold;
+  color: red;
+  text-align: center;
+}
+
+[class^='TR_'] {
+  font-weight: normal;
+}
+
+#TBLDANHSACH .bold :nth-child(3) {
+  font-weight: bold;
+  color: red;
+  text-align: center;
+}
+
+#TBLDANHSACH .bold :nth-child(1) {
+  font-weight: bold;
+  color: blue;
+  text-align: center;
+}

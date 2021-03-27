@@ -1,0 +1,199 @@
+/* Blue Button */
+.btn-add {
+  background: #006a99;
+  border: 1px solid #006a99;
+  border-radius: 3px;
+  padding: 5px 10px;
+  color: white;
+  text-decoration: none !important;
+  margin-right: 5px;
+}
+
+.btn-add:hover {
+  background: #279dcf;
+  border: 1px solid #279dcf;
+  color: white;
+}
+
+.btn-add:visited {
+  color: white;
+}
+
+/* Red button */
+.btn-delete {
+  background: #e62107;
+  border: 1px solid #e62107;
+  border-radius: 3px;
+  padding: 5px 10px;
+  color: white;
+  text-decoration: none !important;
+  margin-right: 5px;
+  /* margin-left: 5px; */
+}
+
+.btn-delete:hover {
+  background: #f16d5c;
+  border: 1px solid #f16d5c;
+  color: white;
+}
+
+.btn-delete:visited {
+  color: white;
+}
+
+/* Green Button */
+.btn-issue {
+  background: #138386;
+  border: 1px solid #138386;
+  border-radius: 3px;
+  padding: 5px 10px;
+  width: 200px;
+  color: white;
+  text-decoration: none !important;
+}
+
+.btn-issue:hover {
+  background: #23a7ac;
+  border: 1px solid #23a7ac;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-issue:visited {
+  color: white;
+}
+
+/* Orange Button */
+.btn-orange {
+  background: #ee6b2f;
+  border: 1px solid #ee6b2f;
+  border-radius: 3px;
+  padding: 3px;
+  width: 200px;
+  color: white;
+  text-decoration: none !important;
+  font-weight: normal;
+  margin-right: 5px;
+  text-align: center;
+}
+
+.btn-orange:hover {
+  background: #f39062;
+  border: 1px solid #f39062;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-orange:visited {
+  color: white;
+}
+
+/* Disabled button */
+.btn-disabled {
+  background: #ccc;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 5px;
+  width: 200px;
+  color: white;
+  text-decoration: none !important;
+  pointer-events: all !important;
+  color: black;
+  /* cursor: not-allowed !important; */
+}
+
+.btn-disabled:hover {
+  background: #ccc;
+  border: 1px solid #ccc;
+  color: black;
+  cursor: not-allowed !important;
+}
+
+.btn-disabled:visited {
+  color: black;
+}
+/* Input style */
+
+.input-primary {
+  width: 270px;
+  display: inline-block;
+  background: white;
+  outline: none;
+  border: 1px solid #ccc;
+  padding: 3px 5px;
+  font-style: italic;
+  font-size: 0.875rem;
+  border-radius: 2px !important;
+}
+
+.input-primary:focus {
+  border: 1px solid #2b9dc4;
+}
+
+::placeholder {
+  color: #ccc;
+}
+
+.input-sub {
+  width: 50px;
+  display: inline-block;
+  background: white;
+  outline: none;
+  border: 1px solid #ccc;
+  padding: 3px 5px;
+  font-style: italic;
+  font-size: 0.875rem;
+  border-radius: 2px !important;
+  margin-bottom: 8px;
+}
+
+.input-sub:focus {
+  border: 1px solid #2b9dc4;
+}
+
+.input-free {
+  display: inline-block;
+  background: white;
+  outline: none;
+  border: 1px solid #ccc;
+  padding: 3px 5px;
+  font-style: italic;
+  font-size: 0.875rem;
+  border-radius: 2px !important;
+  margin-bottom: 8px;
+}
+
+.input-free:focus {
+  border: 1px solid #2b9dc4;
+}
+
+/* Input container */
+.input-container {
+  margin-bottom: 10px;
+}
+
+/* Error Style */
+.error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  font-style: italic;
+  margin: 5px;
+}
+
+/* Container */
+.container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  /* margin: 5px; */
+  height: 100%;
+}
+
+.cls {
+  clear: both;
+}
+
+/* Table row height */
+.row1 {
+  padding: 10px 4px !important;
+}

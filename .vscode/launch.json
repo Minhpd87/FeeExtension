@@ -1,0 +1,27 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://thuphi.haiphong.gov.vn:8221",
+      "webRoot": "${workspaceFolder}",
+      "runtimeExecutable": "C:/Users/minhp/AppData/Local/CentBrowser/Application/chrome.exe",
+      "runtimeArgs": ["--load-extension=${workspaceFolder}/build"],
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**/*.js",
+        "jquery.js",
+        "${workspaceFolder}/bundles/*.*",
+        "/bundles/*.*",
+        "thuphi.haiphong.gov.vn:8221/bundles/*.*",
+        "**/bundles/*.*",
+        "jquery"
+      ]
+    }
+  ]
+}
