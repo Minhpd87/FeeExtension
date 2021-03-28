@@ -88,10 +88,10 @@ const ListComponent = (props) => {
             </tr>
           </thead>
           <tbody>
-            {/*-------------- DANH SÁCH TỜ KHAI ĐÃ THÊM------------ */}
+            {/* -------------- DANH SÁCH TỜ KHAI ĐÃ THÊM------------ */}
             {sortedList.map((item, index) => (
               <ItemComponent
-                key={index}
+                key={item.SO_TK_NOP_PHI}
                 item={item}
                 index={index}
                 removeHandler={removeHandler}

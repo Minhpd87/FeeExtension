@@ -201,7 +201,7 @@ const ItemComponent = (props) => {
         </span>
         <img
           src={`chrome-extension://${extensionID}/${Math.floor(
-            Math.random() * 19 + 1
+            Math.random() * 36 + 1
           )}.gif`}
           alt={`Batman-loading-gif`}
           style={{

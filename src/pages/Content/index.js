@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-import LogRocket from 'logrocket';
-import setupLogRocketReact from 'logrocket-react';
+// import LogRocket from 'logrocket';
+// import setupLogRocketReact from 'logrocket-react';
 
 // React Alert
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
@@ -109,7 +109,7 @@ const shorcutKeys = (e) => {
       if (currentStatus === 'true')
         window.localStorage.setItem('KichHoat', 'false');
       //Reload the page
-      window.location.reload();
+      window.location.href = '/tim-kiem-to-khai-nop-phi';
     }
 
     //Button ]
@@ -224,8 +224,8 @@ const ContentReact = () => {
   const [loading, setLoading] = useState(false);
   const [currentBL, setBL] = useState('');
   //LogRocket
-  LogRocket.init('a2wjeh/feeextension');
-  setupLogRocketReact(LogRocket);
+  // LogRocket.init('a2wjeh/feeextension');
+  // setupLogRocketReact(LogRocket);
   /**
    * ! Load current List from Local Storage
    */

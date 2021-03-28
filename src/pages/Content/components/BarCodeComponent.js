@@ -83,15 +83,13 @@ const BarcodeComponent = () => {
             } else if (currentStart + 49 < maxLength) {
               setCurrentEnd(currentStart + 49);
               thisEnd = currentStart + 49;
-            } else {
-              setCurrentEnd(maxLength);
-              thisEnd = maxLength;
             }
           }
+
           if (currentStart === '') {
             setCurrentStart(1);
           }
-          if (currentEnd > maxLength) {
+          if (currentEnd >= maxLength) {
             setCurrentEnd(maxLength);
             thisEnd = maxLength;
           }
@@ -102,7 +100,8 @@ const BarcodeComponent = () => {
             thisEnd
           );
 
-          thisEnd = currentEnd !== '' ? currentEnd : thisEnd;
+          thisEnd =
+            currentEnd !== '' && currentEnd <= maxLength ? currentEnd : thisEnd;
 
           try {
             for (let i = 0; i < thisEnd; i++) {
@@ -135,7 +134,7 @@ const BarcodeComponent = () => {
           }
           // JSON.stringify(rowObject, undefined, 4);
         });
-        console.log(result);
+        // console.log(result);
         importAndAdd(result, currentStart !== '' ? currentStart - 1 : 0);
         return result;
       };

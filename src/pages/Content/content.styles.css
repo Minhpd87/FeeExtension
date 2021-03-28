@@ -30,6 +30,7 @@ select[name='MA_LOAI_THANH_TOAN'] {
 .item {
   font-weight: normal;
   text-align: left;
+  margin: 0;
   color: #0a043c;
   flex-basis: 20%;
 }

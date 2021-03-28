@@ -1,5 +1,47 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
+const uniqueRandomArray = require('unique-random-array');
+const random = uniqueRandomArray([
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+]);
+
+let imgIndex = [random(), random(), random()];
 
 /**
  * ! Tính tiền thừa:
@@ -10,6 +52,8 @@ const Change = () => {
    */
   let totalAmount = 0;
   let change = 0;
+  const extensionID = chrome.runtime.id;
+
   const [money, setMoney] = useState([
     '',
     '',
@@ -76,6 +120,7 @@ const Change = () => {
       200000,
       500000,
     ]);
+    imgIndex = [random(), random(), random()];
   };
 
   const noteChange = (e) => {
@@ -117,7 +162,7 @@ const Change = () => {
 
   return (
     <div className="grid-row">
-      <div className="grid-row" style={{ width: '50vw' }}>
+      <div className="grid-row" style={{ width: '45vw' }}>
         <span className="item">
           <input
             className="input-sub"
@@ -208,6 +253,59 @@ const Change = () => {
             Clear
           </label>
         </span>
+      </div>
+      <div
+        className="column"
+        style={{
+          // overflow: 'scroll',
+          borderRadius: '5px',
+          scrollBehavior: 'smooth',
+          // background: '#eee',
+          marginBottom: '7px',
+        }}
+        id="batmanIMG"
+      >
+        <div
+          style={{
+            borderRadius: '5px',
+            scrollBehavior: 'smooth',
+            background: '#ccc',
+            padding: '0 5px 0 5px',
+            margin: 'auto',
+            display: 'flex',
+          }}
+        >
+          <img
+            src={`chrome-extension://${extensionID}/${imgIndex[0]}.gif`}
+            alt={`Batman-loading-gif`}
+            style={{
+              height: '88px',
+              borderRadius: '5px',
+              display: 'block',
+              margin: '5px 5px 5px auto',
+            }}
+          />
+          <img
+            src={`chrome-extension://${extensionID}/${imgIndex[1]}.gif`}
+            alt={`Batman-loading-gif`}
+            style={{
+              height: '88px',
+              borderRadius: '5px',
+              display: 'block',
+              margin: '5px 5px 5px auto',
+            }}
+          />
+          <img
+            src={`chrome-extension://${extensionID}/${imgIndex[2]}.gif`}
+            alt={`Batman-loading-gif`}
+            style={{
+              height: '88px',
+              borderRadius: '5px',
+              display: 'block',
+              margin: '5px auto 5px auto',
+            }}
+          />
+        </div>
       </div>
       <div className="column">
         <span
