@@ -237,6 +237,7 @@ const ContentReact = () => {
     if (today !== window.localStorage.getItem('ActiveOn')) {
       console.log('Today does not match');
       window.localStorage.setItem('KichHoat', 'false');
+      window.localStorage.setItem('full_list', JSON.stringify([]));
     } else {
       console.log('Match ActiveOn');
     }

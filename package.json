@@ -1,6 +1,6 @@
 {
   "name": "fee-extension",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Chrome Extension that adds extra features to the thuphi.haiphong.gov.vn's website, re-written from old version",
   "license": "MIT",
   "repository": {

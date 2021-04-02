@@ -164,9 +164,6 @@ const ItemComponent = (props) => {
       {/* -----------------STT--------------------------- */}
       <td className="text-center row1">{totalItem - index}</td>
 
-      {/* -----------------SỐ TỜ KHAI NỘP PHÍ--------------------------- */}
-      <td className="text-center row1">{item.SO_TK_NOP_PHI}</td>
-
       {/* ------------------LOẠI HÀNG-------------------------- */}
       <td className="text-center row1">{type}</td>
 
@@ -176,6 +173,11 @@ const ItemComponent = (props) => {
         style={{ color: 'red', fontWeight: 'bold' }}
       >
         {item.SO_TKHQ}
+      </td>
+
+      {/* -----------------SỐ TỜ KHAI NỘP PHÍ--------------------------- */}
+      <td className="text-center row1 bold" style={{ color: 'black' }}>
+        {item.SO_TK_NOP_PHI}
       </td>
 
       {/* ----------------TÊN DOANH NGHIỆP---------------------------- */}

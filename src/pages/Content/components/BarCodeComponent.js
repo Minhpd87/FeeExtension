@@ -27,6 +27,7 @@ const BarcodeComponent = () => {
    * ! Stateful variables
    */
   const [dsTKHQ, setDS] = useState([]);
+  const [fullList, setFullList] = useState([]);
   const [currentTK, setCurrentTK] = useState('');
   const [issueState, setIssueState] = useState();
   const [searchLoading, setSearch] = useState(false);
@@ -40,14 +41,14 @@ const BarcodeComponent = () => {
    * ! Load current List from Local Storage
    */
   useEffect(() => {
-    // console.log('effect');
-    // alert.info('HIhihihi');
-    // alert.success('Đây là thông báo này bạn ơi!');
-    // alert.error('ERRORORORORO');
     const localDanhSach =
       JSON.parse(window.localStorage.getItem('danh_sach_tk')) || [];
 
     setDS(localDanhSach !== null ? localDanhSach : []);
+
+    const localFull =
+      JSON.parse(window.localStorage.getItem('full_list')) || [];
+    setFullList(localFull);
 
     //Set Loading State for individual items
     const currentLoadingState = new Array(localDanhSach.length).fill(false);
@@ -515,6 +516,12 @@ const BarcodeComponent = () => {
    * ! Delete All Handler
    */
   const deleteAllHandler = () => {
+    let currentFullList =
+      JSON.parse(window.localStorage.getItem('full_list')) || [];
+    currentFullList = currentFullList.concat(dsTKHQ);
+    setFullList(currentFullList);
+    window.localStorage.setItem('full_list', JSON.stringify(currentFullList));
+
     setCurrentTK('');
     setDS([]);
     setError('');
@@ -813,37 +820,9 @@ const BarcodeComponent = () => {
               updateIssueStatus(index, 'F5 Info');
               makeAlert('BL00000 hoặc đã có Biên lai. Reload if error persits');
               // const itemInfo = async () => {
-              let itemInfo = getInfo(item.SO_TKHQ);
-              console.log(itemInfo);
-              //   return a;
-              // };
-              if (
-                //If có biên lai then return do nothing
-                (itemInfo.HAS_BIENLAI === true &&
-                  itemInfo.TRANG_THAI_BL === 2) ||
-                (itemInfo.HAS_BIENLAI === true && itemInfo.TRANG_THAI_BL === 1)
-              ) {
-                updateIssueStatus(index, 'Đã có Biên lai');
-                updateLoading(false);
-                return;
-              } else {
-                //If chưa có Biên lai but has DBIENLAI_TPID meaning 0000
-                if (itemInfo.DBIENLAI_TPID > 1) {
-                  console.log(
-                    `DBIENLAI_TPID exists 2:`,
-                    itemInfo.DBIENLAI_TPID
-                  );
-                  updateIssueStatus(
-                    index,
-                    `Issue 2: ${itemInfo.DBIENLAI_TPID}`
-                  );
-                  updateLoading(true);
-                  TRAMTP = itemInfo.MA_TRAM_TP;
-                  phatHanh(itemInfo.DBIENLAITPID);
-                  return;
-                }
-              }
-              // window.location.reload();
+              const refreshButton = document.getElementById(`f5-btn-${index}`);
+              updateLoading(false);
+              refreshButton.click();
             }
             updateIssueStatus(index, 'Đang lưu');
             updateLoading(true);
@@ -949,6 +928,15 @@ const BarcodeComponent = () => {
         multiIssue={() => multiIssue(dsTKHQ)}
       />
       <hr />
+      <ListComponent
+        listTK={fullList}
+        removeHandler={removeHandler}
+        issueHandler={issueHandler}
+        loadingStatus={loadingState}
+        issueStatus={issueState}
+        getInfo={getInfo}
+        multiIssue={() => multiIssue(dsTKHQ)}
+      />
       <AiFrame url={iURL} />
     </div>
   );

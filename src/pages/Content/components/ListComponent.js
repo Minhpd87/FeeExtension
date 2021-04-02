@@ -18,9 +18,25 @@ const ListComponent = (props) => {
 
   sortedList.reverse();
 
+  let issuedList = [...listTK];
+  let issuedList2 = [];
+
+  for (let i = 0; i < issuedList.length; i++) {
+    if (parseInt(issuedList[i].SO_BIEN_LAI) > 0) {
+      issuedList2 = issuedList2.concat(issuedList[i]);
+      // console.log(issuedList[i]);
+      // console.log(issuedList2);
+    }
+  }
+
   const TotalMoney = () => {
     return (
       <div style={{ float: 'right' }}>
+        <span className="bold">
+          Đã phát hành{' '}
+          <span style={{ color: 'red' }}>{issuedList2.length}</span>/
+          <span style={{ color: 'red' }}>{listTK.length}</span> bộ.{' '}
+        </span>
         <a
           href="#"
           className={
@@ -66,18 +82,18 @@ const ListComponent = (props) => {
       <TotalMoney />
       <div className="cls"></div>
       <div style={{ minHeight: '100px', overflow: 'scroll' }}>
-        <table id="dsTable" className="width100">
+        <table className="width100" id="dsTable">
           <thead>
             <tr className="bold">
               <th className="width45px text-center">#</th>
               <th className="width45px text-center">STT</th>
-              <th className="text-center">TK Nộp Phí</th>
               <th className="text-center">Hàng</th>
               <th className="text-center">TK hải quan</th>
+              <th className="text-center">TK Nộp Phí</th>
               <th className="text-center">Doanh nghiệp khai báo</th>
               <th className="text-center">Ngày TK</th>
               <th className="text-center">Trạng thái</th>
-              <th className="text-center width50px">TT</th>
+              <th className="text-center width50px ">TT</th>
               <th className="text-center">Số tiền</th>
               <th className="text-center" style={{ width: '118px' }}>
                 Phát hành
