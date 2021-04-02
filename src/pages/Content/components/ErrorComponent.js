@@ -53,6 +53,9 @@ const ErrorComponent = (props) => {
             </span>
           </a>
         </div>
+        <div
+          style={{ borderBottom: '1px solid #eee', margin: '10px 0 10px 0' }}
+        ></div>
       </div>
     );
   }
@@ -78,6 +81,9 @@ const ErrorComponent = (props) => {
         >
           <p className="error">{errorMessage}</p>
         </div>
+        <div
+          style={{ borderBottom: '1px solid #eee', margin: '10px 0 10px 0' }}
+        ></div>
       </div>
     );
   }

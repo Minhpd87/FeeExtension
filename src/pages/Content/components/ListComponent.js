@@ -31,11 +31,44 @@ const ListComponent = (props) => {
 
   const TotalMoney = () => {
     return (
-      <div style={{ float: 'right' }}>
+      <div>
+        <div style={{ float: 'right' }}>
+          <a
+            href="#"
+            className={
+              loadingStatus.includes(true) ? 'btn-disabled' : 'btn-issue'
+            }
+            style={{ marginRight: '5px', display: '' }}
+            onClick={multiIssue}
+          >
+            <i className="fa fa-paper-plane-o"></i> Phát hành all
+          </a>
+          <span className="text-center bold">
+            Tổng tiền của <span style={{ color: 'red' }}>{listTK.length}</span>{' '}
+            bộ là:{' '}
+          </span>
+          <span
+            id="total_debt"
+            style={{
+              color: 'red',
+              fontWeight: 'bold',
+            }}
+          >
+            {listTK.length > 0
+              ? listTK
+                  .map((element) => element.TONG_TIEN)
+                  .reduce((sum, current) => sum + current)
+                  .toLocaleString('vi')
+              : 0}
+          </span>
+          <span className="bold"> đồng.</span>
+          <hr />
+        </div>
         <span className="bold">
-          Đã phát hành{' '}
-          <span style={{ color: 'red' }}>{issuedList2.length}</span>/
-          <span style={{ color: 'red' }}>{listTK.length}</span> bộ.{' '}
+          Đã phát hành&nbsp;
+          <progress value={issuedList2.length} max={listTK.length}></progress>
+          &nbsp;<span style={{ color: 'red' }}>{issuedList2.length}</span>/
+          <span style={{ color: 'red' }}>{listTK.length}</span> bộ.&nbsp;
         </span>
         <a
           href="#"
@@ -45,34 +78,8 @@ const ListComponent = (props) => {
           style={{ marginRight: '5px', display: '' }}
           onClick={multiIssue}
         >
-          <i className="fa fa-paper-plane-o"></i> Phát hành all
+          Danh sách đã phát hành
         </a>
-        <span className="text-center bold">
-          Tổng tiền của <span style={{ color: 'red' }}>{listTK.length}</span> bộ
-          là:{' '}
-        </span>
-        <span
-          id="total_debt"
-          style={{
-            color: 'red',
-            fontWeight: 'bold',
-          }}
-        >
-          {listTK.length > 0
-            ? listTK
-                .map((element) => element.TONG_TIEN)
-                .reduce((sum, current) => sum + current)
-                .toLocaleString('vi')
-            : 0}
-        </span>
-        <span className="bold"> đồng.</span>
-        {/* <span className="text-center" colSpan="4">
-          <img
-            src={'chrome-extension://' + extensionID + '/' + 'icon-bat-34.png'}
-            alt="Batman icon"
-          />
-        </span> */}
-        <hr />
       </div>
     );
   };

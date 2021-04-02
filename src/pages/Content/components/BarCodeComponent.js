@@ -522,6 +522,9 @@ const BarcodeComponent = () => {
     setFullList(currentFullList);
     window.localStorage.setItem('full_list', JSON.stringify(currentFullList));
 
+    setFullList(currentFullList);
+    window.localStorage.setItem('full_list', JSON.stringify([]));
+
     setCurrentTK('');
     setDS([]);
     setError('');
@@ -915,9 +918,7 @@ const BarcodeComponent = () => {
         style={{ borderBottom: '1px solid #eee', marginBottom: '10px' }}
       ></div>
       <ErrorComponent errorMessage={errorMessage} />
-      <div
-        style={{ borderBottom: '1px solid #eee', marginBottom: '10px' }}
-      ></div>
+
       <ListComponent
         listTK={dsTKHQ}
         removeHandler={removeHandler}
@@ -928,15 +929,6 @@ const BarcodeComponent = () => {
         multiIssue={() => multiIssue(dsTKHQ)}
       />
       <hr />
-      <ListComponent
-        listTK={fullList}
-        removeHandler={removeHandler}
-        issueHandler={issueHandler}
-        loadingStatus={loadingState}
-        issueStatus={issueState}
-        getInfo={getInfo}
-        multiIssue={() => multiIssue(dsTKHQ)}
-      />
       <AiFrame url={iURL} />
     </div>
   );
