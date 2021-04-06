@@ -68,6 +68,7 @@ const BarcodeComponent = () => {
   const readXLS = (xlsFile) => {
     // XLSX.utils.json_to_sheet(data, 'out.xlsx');
     let result = [];
+    let noID = [];
     if (xlsFile) {
       let fileReader = new FileReader();
       fileReader.readAsBinaryString(xlsFile);
@@ -116,24 +117,22 @@ const BarcodeComponent = () => {
             try {
               if (element.includes('ID_CT: ')) {
                 element = element.replace('ID_CT: ', 'ID_CT:');
-              }
-
-              if (element.includes('ID_CT:')) {
+              } else if (element.includes('ID_CT:')) {
                 result = result.concat(
                   element
                     .match(/CT:[0-9]{5,}/g)
                     .join('')
                     .replace('CT:', '')
                 );
-              }
-
-              if (element.includes('+TKNS3511')) {
+              } else if (element.includes('+TKNS3511')) {
                 result = result.concat(
                   element
                     .match(/ID[0-9]{5,}/g)
                     .join('')
                     .replace('ID', '')
                 );
+              } else {
+                noID = noID.concat(element);
               }
             } catch (error) {
               let currentError = window.localStorage.getItem('error') || '';
@@ -159,6 +158,7 @@ const BarcodeComponent = () => {
           // JSON.stringify(rowObject, undefined, 4);
         });
         console.log(result);
+        console.table(noID);
         window.localStorage.setItem('DSTK', JSON.stringify(result));
         importAndAdd(result, currentStart !== '' ? currentStart - 1 : 0);
         return result;
