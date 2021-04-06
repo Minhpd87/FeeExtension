@@ -70,16 +70,6 @@ const ListComponent = (props) => {
           &nbsp;<span style={{ color: 'red' }}>{issuedList2.length}</span>/
           <span style={{ color: 'red' }}>{listTK.length}</span> bộ.&nbsp;
         </span>
-        <a
-          href="#"
-          className={
-            loadingStatus.includes(true) ? 'btn-disabled' : 'btn-issue'
-          }
-          style={{ marginRight: '5px', display: '' }}
-          onClick={multiIssue}
-        >
-          Danh sách đã phát hành
-        </a>
       </div>
     );
   };
@@ -114,7 +104,7 @@ const ListComponent = (props) => {
             {/* -------------- DANH SÁCH TỜ KHAI ĐÃ THÊM------------ */}
             {sortedList.map((item, index) => (
               <ItemComponent
-                key={item.SO_TK_NOP_PHI}
+                key={index}
                 item={item}
                 index={index}
                 removeHandler={removeHandler}

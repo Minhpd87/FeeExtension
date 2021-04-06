@@ -28,6 +28,7 @@ const BarcodeComponent = () => {
    */
   const [dsTKHQ, setDS] = useState([]);
   const [fullList, setFullList] = useState([]);
+  const [list247, set247] = useState([]);
   const [currentTK, setCurrentTK] = useState('');
   const [issueState, setIssueState] = useState();
   const [searchLoading, setSearch] = useState(false);
@@ -41,18 +42,21 @@ const BarcodeComponent = () => {
    * ! Load current List from Local Storage
    */
   useEffect(() => {
-    const localDanhSach =
+    const localDanhSach = () =>
       JSON.parse(window.localStorage.getItem('danh_sach_tk')) || [];
 
     setDS(localDanhSach !== null ? localDanhSach : []);
 
-    const localFull =
+    const localFull = () =>
       JSON.parse(window.localStorage.getItem('full_list')) || [];
     setFullList(localFull);
 
     //Set Loading State for individual items
     const currentLoadingState = new Array(localDanhSach.length).fill(false);
     const currentStatus = new Array(localDanhSach.length).fill('');
+    const ds247 = () =>
+      JSON.parse(window.localStorage.getItem('list247')) || [];
+    set247(ds247);
     setLoadingState(currentLoadingState);
     setIssueState(currentStatus);
   }, []);
@@ -73,7 +77,7 @@ const BarcodeComponent = () => {
         // console.log(workbook);
         workbook.SheetNames.forEach((sheet) => {
           let rowObject = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
-          // console.table(rowObject);
+          console.log(rowObject);
           const maxLength = rowObject.length;
           let thisEnd;
 
@@ -104,9 +108,12 @@ const BarcodeComponent = () => {
           thisEnd =
             currentEnd !== '' && currentEnd <= maxLength ? currentEnd : thisEnd;
 
-          try {
-            for (let i = 0; i < thisEnd; i++) {
-              let element = rowObject[i].dg;
+          for (let i = 0; i < thisEnd; i++) {
+            let element = rowObject[i].dg;
+            if (element === undefined) {
+              element = rowObject[i].nd;
+            }
+            try {
               if (element.includes('ID_CT: ')) {
                 element = element.replace('ID_CT: ', 'ID_CT:');
               }
@@ -126,16 +133,22 @@ const BarcodeComponent = () => {
                     .replace('ID', '')
                 );
               }
+            } catch (error) {
+              setError(
+                errorMessage + `Error reading: ${element} - ${error.message} \n`
+              );
+              console.log(element);
+              setCurrentStart(i);
+              // setTimeout(() => setError(''), 3000);
+              // window.alert(`File không đúng định dạng: ${error.message}`);
+              // window.location.reload();
             }
-          } catch (error) {
-            setError(`Error reading: ${error.message}`);
-            // setTimeout(() => setError(''), 3000);
-            window.alert(`File không đúng định dạng: ${error.message}`);
-            window.location.reload();
           }
+
           // JSON.stringify(rowObject, undefined, 4);
         });
         // console.log(result);
+        window.localStorage.setItem('DSTK', JSON.stringify(result));
         importAndAdd(result, currentStart !== '' ? currentStart - 1 : 0);
         return result;
       };
@@ -159,18 +172,35 @@ const BarcodeComponent = () => {
       }
       setDS(filtered);
     } else {
-      const arr = JSON.parse(window.localStorage.getItem('danh_sach_tk'));
+      const arr = () => JSON.parse(window.localStorage.getItem('danh_sach_tk'));
       console.log(arr);
       setDS(arr);
     }
   };
 
+  const load247 = () => {
+    const local247 = JSON.parse(window.localStorage.getItem('list247')) || [];
+    let undoneList = [];
+    for (let i = 0; i < local247.length; i++) {
+      if (local247[i].TRANG_THAI_BL < 1) {
+        undoneList = undoneList.concat(local247[i]);
+        // console.log(local247[i]);
+        // console.log(undoneList);
+      }
+    }
+    console.log(undoneList);
+    setDS(undoneList);
+    set247(list247);
+  };
+
   /**
    * ! Get and Add from Excel files
    */
+
   const importAndAdd = (arr, start) => {
     const target = '/DToKhaiNopPhi/GetThongBaoNP_TaoBienLai/';
-    let currentList = [...dsTKHQ];
+    let list_247 = JSON.parse(window.localStorage.getItem('list247')) || [];
+    // let currentList = [...dsTKHQ];
 
     const delay = (ms) => {
       return new Promise((resolve) => setTimeout(resolve, ms));
@@ -180,7 +210,7 @@ const BarcodeComponent = () => {
       const element = arr[i];
 
       setSearch(true);
-      delay(200).then(async () => {
+      delay(50).then(async () => {
         let data = new FormData();
         data.append('SO_TK', element);
         const response = await fetch(target, {
@@ -195,14 +225,19 @@ const BarcodeComponent = () => {
         // console.log(element, localResult);
         if (localResult.DANHSACH.length >= 1) {
           // console.log(`Loop ${i}: ${localResult.DANHSACH}`);
-          currentList = currentList.concat(
+          // currentList = currentList.concat(
+          //   localResult.DANHSACH[localResult.DANHSACH.length - 1]
+          // );
+
+          list_247 = list_247.concat(
             localResult.DANHSACH[localResult.DANHSACH.length - 1]
           );
-          window.localStorage.setItem(
-            'danh_sach_tk',
-            JSON.stringify(currentList)
-          );
-          setDS(currentList);
+
+          window.localStorage.setItem('list247', JSON.stringify(list_247));
+
+          // window.localStorage.setItem('list247', JSON.stringify(list_247));
+          // setDS(currentList);
+          set247(list_247);
           i++;
           setSearch(false);
           if (i < arr.length) {
@@ -211,7 +246,7 @@ const BarcodeComponent = () => {
             // console.log(`Done looping`);
           }
         } else {
-          setError(`Lỗi lấy thông tin chứng từ ${element}`);
+          setError(errorMessage + ` Lỗi lấy thông tin chứng từ ${element} | `);
           // setTimeout(() => setError(''), 3000);
           setCurrentStart(i + 1);
           setSearch(false);
@@ -322,7 +357,9 @@ const BarcodeComponent = () => {
                 return null;
               }
             } else {
-              setError(`Lỗi lấy thông tin chứng từ ${element}`);
+              setError(
+                errorMessage + `Lỗi lấy thông tin chứng từ ${element} | `
+              );
               updateIssueStatus(i, `Lỗi!`);
               setTimeout(() => setError(''), 3000);
               // setCurrentStart(i);
@@ -531,7 +568,10 @@ const BarcodeComponent = () => {
     setLoadingState([false]);
     setCurrentStart('');
     setCurrentEnd('');
+    set247('');
     window.localStorage.setItem('danh_sach_tk', JSON.stringify([]));
+    window.localStorage.setItem('list247', JSON.stringify([]));
+    window.localStorage.setItem('DSTK', JSON.stringify([]));
     window.localStorage.setItem('currentList', JSON.stringify([]));
     window.localStorage.setItem('issued', 'none');
     makeAlert('Đã xoá hết các tờ khai!', 'success');
@@ -910,15 +950,17 @@ const BarcodeComponent = () => {
         setCurrentStart={setCurrentStart}
         setCurrentEnd={setCurrentEnd}
         currentStart={currentStart}
+        load247={load247}
+        list247={list247 ? list247 : []}
         currentEnd={currentEnd}
       />
+
       <hr />
       <Change />
       <div
         style={{ borderBottom: '1px solid #eee', marginBottom: '10px' }}
       ></div>
       <ErrorComponent errorMessage={errorMessage} />
-
       <ListComponent
         listTK={dsTKHQ}
         removeHandler={removeHandler}

@@ -17,6 +17,8 @@ const InputComponent = (props) => {
     setCurrentEnd,
     currentEnd,
     currentStart,
+    load247,
+    list247,
   } = props;
   const extensionID = chrome.runtime.id;
   const [selectedFile, setSelectedFile] = useState('');
@@ -125,9 +127,9 @@ const InputComponent = (props) => {
           min="1"
           onChange={(event) => changeIndex(event)}
         />
-        <span className="bold">
+        {/* <span className="bold">
           <em>&nbsp;(mặc định sẽ đọc 50 số Tờ khai 1 lần)</em>
-        </span>
+        </span> */}
         <input
           type="checkbox"
           id="noBL"
@@ -136,6 +138,14 @@ const InputComponent = (props) => {
           style={{ marginLeft: '5px' }}
         />
         <span> Lọc chưa có BL </span>
+        <span>&nbsp;</span>
+        <a href="#" className="btn-add" onClick={load247}>
+          Load DS247
+        </a>
+        <span>&nbsp;</span>
+        <span className="bold">
+          Đã đọc <span style={{ color: 'red' }}>{list247.length}</span> bộ
+        </span>
       </div>
     </div>
   );
