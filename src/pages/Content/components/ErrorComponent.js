@@ -79,7 +79,9 @@ const ErrorComponent = (props) => {
             background: '#eee',
           }}
         >
-          <p className="error">{errorMessage}</p>
+          <span className="error" style={{ whiteSpace: 'pre-line' }}>
+            {errorMessage}
+          </span>
         </div>
         <div
           style={{ borderBottom: '1px solid #eee', margin: '10px 0 10px 0' }}

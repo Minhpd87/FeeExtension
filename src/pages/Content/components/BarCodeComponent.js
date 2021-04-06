@@ -54,9 +54,9 @@ const BarcodeComponent = () => {
     //Set Loading State for individual items
     const currentLoadingState = new Array(localDanhSach.length).fill(false);
     const currentStatus = new Array(localDanhSach.length).fill('');
-    const ds247 = () =>
-      JSON.parse(window.localStorage.getItem('list247')) || [];
-    set247(ds247);
+    // const ds247 = () =>
+    //   JSON.parse(window.localStorage.getItem('list247')) || [];
+    // set247(ds247);
     setLoadingState(currentLoadingState);
     setIssueState(currentStatus);
   }, []);
@@ -81,20 +81,20 @@ const BarcodeComponent = () => {
           const maxLength = rowObject.length;
           let thisEnd;
 
-          if (currentEnd === '') {
-            if (currentStart + 49 < 50) {
-              setCurrentEnd(50);
-              thisEnd = 50;
-            } else if (currentStart + 49 < maxLength) {
-              setCurrentEnd(currentStart + 49);
-              thisEnd = currentStart + 49;
-            }
-          }
+          // if (currentEnd === '') {
+          //   if (currentStart + 49 < 50) {
+          //     setCurrentEnd(50);
+          //     thisEnd = 50;
+          //   } else if (currentStart + 49 < maxLength) {
+          //     setCurrentEnd(currentStart + 49);
+          //     thisEnd = currentStart + 49;
+          //   }
+          // }
 
           if (currentStart === '') {
             setCurrentStart(1);
           }
-          if (currentEnd >= maxLength) {
+          if (currentEnd >= maxLength || currentEnd === '') {
             setCurrentEnd(maxLength);
             thisEnd = maxLength;
           }
@@ -121,24 +121,35 @@ const BarcodeComponent = () => {
               if (element.includes('ID_CT:')) {
                 result = result.concat(
                   element
-                    .match(/CT:[0-9]{12}/g)
+                    .match(/CT:[0-9]{5,}/g)
                     .join('')
                     .replace('CT:', '')
                 );
-              } else if (element.includes('+TKNS3511')) {
+              }
+
+              if (element.includes('+TKNS3511')) {
                 result = result.concat(
                   element
-                    .match(/ID[0-9]{12}/g)
+                    .match(/ID[0-9]{5,}/g)
                     .join('')
                     .replace('ID', '')
                 );
               }
             } catch (error) {
+              let currentError = window.localStorage.getItem('error') || '';
               setError(
-                errorMessage + `Error reading: ${element} - ${error.message} \n`
+                `${currentError} Lỗi đọc chứng từ A ${element} at ${i + 1} ${
+                  error.message
+                } |`
               );
-              console.log(element);
-              setCurrentStart(i);
+              window.localStorage.setItem(
+                'error',
+                `${currentError} Lỗi đọc chứng từ A ${element} at ${i + 1} ${
+                  error.message
+                } |`
+              );
+              // console.log(element);
+              // setCurrentStart(i + 1);
               // setTimeout(() => setError(''), 3000);
               // window.alert(`File không đúng định dạng: ${error.message}`);
               // window.location.reload();
@@ -147,7 +158,7 @@ const BarcodeComponent = () => {
 
           // JSON.stringify(rowObject, undefined, 4);
         });
-        // console.log(result);
+        console.log(result);
         window.localStorage.setItem('DSTK', JSON.stringify(result));
         importAndAdd(result, currentStart !== '' ? currentStart - 1 : 0);
         return result;
@@ -178,28 +189,14 @@ const BarcodeComponent = () => {
     }
   };
 
-  const load247 = () => {
-    const local247 = JSON.parse(window.localStorage.getItem('list247')) || [];
-    let undoneList = [];
-    for (let i = 0; i < local247.length; i++) {
-      if (local247[i].TRANG_THAI_BL < 1) {
-        undoneList = undoneList.concat(local247[i]);
-        // console.log(local247[i]);
-        // console.log(undoneList);
-      }
-    }
-    console.log(undoneList);
-    setDS(undoneList);
-    set247(list247);
-  };
-
   /**
    * ! Get and Add from Excel files
    */
 
   const importAndAdd = (arr, start) => {
     const target = '/DToKhaiNopPhi/GetThongBaoNP_TaoBienLai/';
-    let list_247 = JSON.parse(window.localStorage.getItem('list247')) || [];
+    let list_247 = [];
+    let un_done = [...dsTKHQ];
     // let currentList = [...dsTKHQ];
 
     const delay = (ms) => {
@@ -222,34 +219,70 @@ const BarcodeComponent = () => {
           credentials: 'same-origin',
         });
         let localResult = await response.json();
-        // console.log(element, localResult);
-        if (localResult.DANHSACH.length >= 1) {
-          // console.log(`Loop ${i}: ${localResult.DANHSACH}`);
-          // currentList = currentList.concat(
-          //   localResult.DANHSACH[localResult.DANHSACH.length - 1]
-          // );
+        // console.log(element);
+        try {
+          if (localResult.DANHSACH.length >= 1) {
+            // console.log(`Loop ${i}: ${localResult.DANHSACH}`);
+            // currentList = currentList.concat(
+            //   localResult.DANHSACH[localResult.DANHSACH.length - 1]
+            // );
+            let item = localResult.DANHSACH[localResult.DANHSACH.length - 1];
+            if (item.TRANG_THAI_BL < 1) {
+              item.TEN_DV_KHAI_BAO =
+                item.TEN_DV_KHAI_BAO + `- Chứng từ ${element}`;
+              un_done = un_done.concat(item);
+            }
 
-          list_247 = list_247.concat(
-            localResult.DANHSACH[localResult.DANHSACH.length - 1]
-          );
-
-          window.localStorage.setItem('list247', JSON.stringify(list_247));
-
-          // window.localStorage.setItem('list247', JSON.stringify(list_247));
-          // setDS(currentList);
-          set247(list_247);
-          i++;
-          setSearch(false);
-          if (i < arr.length) {
-            getToAdd(i);
+            if (item !== null) {
+              list_247 = list_247.concat(item);
+            }
+            window.localStorage.setItem('list247', JSON.stringify(list_247));
+            window.localStorage.setItem(
+              'danh_sach_tk',
+              JSON.stringify(un_done)
+            );
+            setDS(un_done);
+            set247(list_247);
+            i++;
+            setSearch(false);
+            if (i < arr.length) {
+              getToAdd(i);
+            } else {
+              // console.log(`Done looping`);
+            }
           } else {
-            // console.log(`Done looping`);
+            let currentError = window.localStorage.getItem('error') || '';
+            setError(
+              `${currentError} Lỗi lấy thông tin chứng từ ${element} at ${
+                i + 1
+              } | \n`
+            );
+            window.localStorage.setItem(
+              'error',
+              `${currentError} Lỗi lấy thông tin chứng từ ${element} at ${
+                i + 1
+              } | \n`
+            );
+            getToAdd(i + 2);
+            // setTimeout(() => setError(''), 3000);
+            // setCurrentStart(i + 1);
+            // setSearch(false);
           }
-        } else {
-          setError(errorMessage + ` Lỗi lấy thông tin chứng từ ${element} | `);
-          // setTimeout(() => setError(''), 3000);
-          setCurrentStart(i + 1);
-          setSearch(false);
+        } catch (error) {
+          // console.log(`${element} is error`);
+          let currentError = window.localStorage.getItem('error') || '';
+          setError(
+            `${currentError} Lỗi lấy thông tin chứng từ ${element} at ${
+              i + 1
+            } |`
+          );
+          window.localStorage.setItem(
+            'error',
+            `${currentError} Lỗi lấy thông tin chứng từ ${element} at ${
+              i + 1
+            } |`
+          );
+          getToAdd(i + 2);
         }
       });
     };
@@ -574,6 +607,7 @@ const BarcodeComponent = () => {
     window.localStorage.setItem('DSTK', JSON.stringify([]));
     window.localStorage.setItem('currentList', JSON.stringify([]));
     window.localStorage.setItem('issued', 'none');
+    window.localStorage.setItem('error', '');
     makeAlert('Đã xoá hết các tờ khai!', 'success');
     //Set focus to the input
     // window.location.reload();
@@ -950,7 +984,6 @@ const BarcodeComponent = () => {
         setCurrentStart={setCurrentStart}
         setCurrentEnd={setCurrentEnd}
         currentStart={currentStart}
-        load247={load247}
         list247={list247 ? list247 : []}
         currentEnd={currentEnd}
       />

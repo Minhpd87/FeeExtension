@@ -17,7 +17,6 @@ const InputComponent = (props) => {
     setCurrentEnd,
     currentEnd,
     currentStart,
-    load247,
     list247,
   } = props;
   const extensionID = chrome.runtime.id;
@@ -139,11 +138,14 @@ const InputComponent = (props) => {
         />
         <span> Lọc chưa có BL </span>
         <span>&nbsp;</span>
-        <a href="#" className="btn-add" onClick={load247}>
-          Load DS247
-        </a>
-        <span>&nbsp;</span>
-        <span className="bold">
+        <span
+          className="bold"
+          style={{
+            border: '1px solid #ccc',
+            padding: '5px',
+            borderRadius: '5px',
+          }}
+        >
           Đã đọc <span style={{ color: 'red' }}>{list247.length}</span> bộ
         </span>
       </div>
