@@ -61,6 +61,7 @@ const ErrorComponent = (props) => {
   }
 
   if (typeof errorMessage === 'string' && errorMessage.length !== 0) {
+    let errorArray = errorMessage.split('|');
     renderItem = (
       <div
         style={{
@@ -79,9 +80,14 @@ const ErrorComponent = (props) => {
             background: '#eee',
           }}
         >
-          <span className="error" style={{ whiteSpace: 'pre-line' }}>
+          {/* <span className="error" style={{ whiteSpace: 'pre-line' }}>
             {errorMessage}
-          </span>
+          </span> */}
+          {errorArray.map((e, index) => (
+            <p className="error" key={index}>
+              {index + 1} - {e}
+            </p>
+          ))}
         </div>
         <div
           style={{ borderBottom: '1px solid #eee', margin: '10px 0 10px 0' }}

@@ -59,6 +59,7 @@ const BarcodeComponent = () => {
     // set247(ds247);
     setLoadingState(currentLoadingState);
     setIssueState(currentStatus);
+    window.localStorage.setItem('error', '');
   }, []);
 
   // console.log(loadingState);
@@ -81,16 +82,6 @@ const BarcodeComponent = () => {
           console.log(rowObject);
           const maxLength = rowObject.length;
           let thisEnd;
-
-          // if (currentEnd === '') {
-          //   if (currentStart + 49 < 50) {
-          //     setCurrentEnd(50);
-          //     thisEnd = 50;
-          //   } else if (currentStart + 49 < maxLength) {
-          //     setCurrentEnd(currentStart + 49);
-          //     thisEnd = currentStart + 49;
-          //   }
-          // }
 
           if (currentStart === '') {
             setCurrentStart(1);
@@ -117,7 +108,8 @@ const BarcodeComponent = () => {
             try {
               if (element.includes('ID_CT: ')) {
                 element = element.replace('ID_CT: ', 'ID_CT:');
-              } else if (element.includes('ID_CT:')) {
+              }
+              if (element.includes('ID_CT:')) {
                 result = result.concat(
                   element
                     .match(/CT:[0-9]{5,}/g)
@@ -147,11 +139,6 @@ const BarcodeComponent = () => {
                   error.message
                 } |`
               );
-              // console.log(element);
-              // setCurrentStart(i + 1);
-              // setTimeout(() => setError(''), 3000);
-              // window.alert(`File không đúng định dạng: ${error.message}`);
-              // window.location.reload();
             }
           }
 
@@ -203,29 +190,30 @@ const BarcodeComponent = () => {
       return new Promise((resolve) => setTimeout(resolve, ms));
     };
 
+    const getID = async (element) => {
+      let data = new FormData();
+      data.append('SO_TK', element);
+      const response = await fetch(target, {
+        method: 'POST',
+        body: data,
+        headers: {
+          __RequestVerificationToken: verificationToken,
+        },
+        credentials: 'same-origin',
+      });
+      let localResult = await response.json();
+      return localResult;
+    };
+
     const getToAdd = (i) => {
       const element = arr[i];
-
+      // console.log(element);
       setSearch(true);
-      delay(50).then(async () => {
-        let data = new FormData();
-        data.append('SO_TK', element);
-        const response = await fetch(target, {
-          method: 'POST',
-          body: data,
-          headers: {
-            __RequestVerificationToken: verificationToken,
-          },
-          credentials: 'same-origin',
-        });
-        let localResult = await response.json();
-        // console.log(element);
+      delay(1).then(async () => {
+        let localResult = await getID(element);
+
         try {
           if (localResult.DANHSACH.length >= 1) {
-            // console.log(`Loop ${i}: ${localResult.DANHSACH}`);
-            // currentList = currentList.concat(
-            //   localResult.DANHSACH[localResult.DANHSACH.length - 1]
-            // );
             let item = localResult.DANHSACH[localResult.DANHSACH.length - 1];
             if (item.TRANG_THAI_BL < 1) {
               item.TEN_DV_KHAI_BAO =
@@ -236,7 +224,7 @@ const BarcodeComponent = () => {
             if (item !== null) {
               list_247 = list_247.concat(item);
             }
-            window.localStorage.setItem('list247', JSON.stringify(list_247));
+            // window.localStorage.setItem('list247', JSON.stringify(list_247));
             window.localStorage.setItem(
               'danh_sach_tk',
               JSON.stringify(un_done)
@@ -253,17 +241,17 @@ const BarcodeComponent = () => {
           } else {
             let currentError = window.localStorage.getItem('error') || '';
             setError(
-              `${currentError} Lỗi lấy thông tin chứng từ ${element} at ${
+              `${currentError} Lỗi lấy thông tin chứng từ A: ${element} at ${
                 i + 1
               } | \n`
             );
             window.localStorage.setItem(
               'error',
-              `${currentError} Lỗi lấy thông tin chứng từ ${element} at ${
+              `${currentError} Lỗi lấy thông tin chứng từ A: ${element} at ${
                 i + 1
               } | \n`
             );
-            getToAdd(i + 2);
+            getToAdd(i + 1);
             // setTimeout(() => setError(''), 3000);
             // setCurrentStart(i + 1);
             // setSearch(false);
@@ -272,17 +260,17 @@ const BarcodeComponent = () => {
           // console.log(`${element} is error`);
           let currentError = window.localStorage.getItem('error') || '';
           setError(
-            `${currentError} Lỗi lấy thông tin chứng từ ${element} at ${
+            `${currentError} Lỗi lấy thông tin chứng từ B: ${element} at ${
               i + 1
             } |`
           );
           window.localStorage.setItem(
             'error',
-            `${currentError} Lỗi lấy thông tin chứng từ ${element} at ${
+            `${currentError} Lỗi lấy thông tin chứng từ B: ${element} at ${
               i + 1
             } |`
           );
-          getToAdd(i + 2);
+          getToAdd(i + 1);
         }
       });
     };
