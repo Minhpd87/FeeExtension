@@ -22,7 +22,7 @@ const ListComponent = (props) => {
   let issuedList2 = [];
 
   for (let i = 0; i < issuedList.length; i++) {
-    if (parseInt(issuedList[i].SO_BIEN_LAI) > 0) {
+    if (parseInt(issuedList[i].TRANG_THAI_BL) >= 1) {
       issuedList2 = issuedList2.concat(issuedList[i]);
       // console.log(issuedList[i]);
       // console.log(issuedList2);

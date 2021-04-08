@@ -141,7 +141,6 @@ const BarcodeComponent = () => {
               );
             }
           }
-
           // JSON.stringify(rowObject, undefined, 4);
         });
         console.log(result);
@@ -221,6 +220,9 @@ const BarcodeComponent = () => {
 
         try {
           if (localResult.DANHSACH.length >= 1) {
+            localResult.DANHSACH.sort(
+              (a, b) => a.TRANG_THAI_BL - b.TRANG_THAI_BL
+            );
             let item = localResult.DANHSACH[localResult.DANHSACH.length - 1];
             if (item.TRANG_THAI_BL < 1) {
               item.TEN_DV_KHAI_BAO =
@@ -264,7 +266,7 @@ const BarcodeComponent = () => {
             // setSearch(false);
           }
         } catch (error) {
-          // console.log(`${element} is error`);
+          console.log(`${element} is error ${error.message}`);
           let currentError = window.localStorage.getItem('error') || '';
           setError(
             `${currentError} Lỗi lấy thông tin chứng từ B: ${element} at ${
@@ -277,7 +279,9 @@ const BarcodeComponent = () => {
               i + 1
             } |`
           );
-          getToAdd(i + 1);
+          if (i + 1 < arr.length) {
+            getToAdd(i + 1);
+          }
         }
       });
     };
@@ -371,6 +375,9 @@ const BarcodeComponent = () => {
 
             let newElement = null;
             if (elementInfo.DANHSACH.length >= 1) {
+              elementInfo.DANHSACH.sort(
+                (a, b) => a.TRANG_THAI_BL - b.TRANG_THAI_BL
+              );
               newElement =
                 elementInfo.DANHSACH[elementInfo.DANHSACH.length - 1];
               updateDS3(newElement);
@@ -427,6 +434,7 @@ const BarcodeComponent = () => {
         credentials: 'same-origin',
       });
       let fetchedData = await response.json();
+      fetchedData.DANHSACH.sort((a, b) => a.TRANG_THAI_BL - b.TRANG_THAI_BL);
       setSearch(false);
       setLoadingState(loadingState.fill(false));
       updateDS3(fetchedData.DANHSACH[fetchedData.DANHSACH.length - 1]);
@@ -449,6 +457,7 @@ const BarcodeComponent = () => {
         (e) => e.SO_TKHQ === newElement.SO_TKHQ
       );
       // console.log(found);
+      newElement.TEN_DV_KHAI_BAO = currentArr[found].TEN_DV_KHAI_BAO;
       currentArr[found] = newElement;
       // console.log('DSTKHQ:', dsTKHQ);
       // console.log('CurrentARR:', currentArr);
