@@ -212,12 +212,19 @@ const BarcodeComponent = () => {
       delay(1).then(async () => {
         let localResult = await getID(element);
 
+        // let eleArray = [];
+        // for (let y = 0; y < 5; y++) {
+        //   eleArray = eleArray.concat(arr[i + y]);
+        // }
+
+        // const xArray = await Promise.all([getID])
+
         try {
           if (localResult.DANHSACH.length >= 1) {
             let item = localResult.DANHSACH[localResult.DANHSACH.length - 1];
             if (item.TRANG_THAI_BL < 1) {
               item.TEN_DV_KHAI_BAO =
-                item.TEN_DV_KHAI_BAO + `- Chứng từ ${element}`;
+                item.TEN_DV_KHAI_BAO + ` - Chứng từ: ${element}`;
               un_done = un_done.concat(item);
             }
 
@@ -435,12 +442,16 @@ const BarcodeComponent = () => {
   const updateDS3 = (newElement) => {
     // console.log(newElement);
     try {
-      const currentArr = [...dsTKHQ];
+      const currentArr = JSON.parse(
+        window.localStorage.getItem('danh_sach_tk')
+      );
       const found = currentArr.findIndex(
         (e) => e.SO_TKHQ === newElement.SO_TKHQ
       );
       // console.log(found);
       currentArr[found] = newElement;
+      // console.log('DSTKHQ:', dsTKHQ);
+      // console.log('CurrentARR:', currentArr);
       setDS(currentArr);
       window.localStorage.setItem('danh_sach_tk', JSON.stringify(currentArr));
       // window.localStorage.setItem('issued', 'true');
@@ -730,7 +741,8 @@ const BarcodeComponent = () => {
     updateLoading(true);
 
     //Check if is BL 0000
-    if (blNumber === 0 || hasBL === true) BL000 = true;
+    // console.log(blNumber === '', blNumber === 0);
+    if ((blNumber === '0' || blNumber === 0) && hasBL === true) BL000 = true;
     let dataContent = new FormData();
 
     const phatHanh = (idToPhat) => {
@@ -800,11 +812,12 @@ const BarcodeComponent = () => {
                     }
                   });
               } else if (data.code === 0) {
+                console.log(data);
                 updateLoading(false);
                 setError(data.message);
                 updateIssueStatus(index, data.message);
                 window.alert(`Lỗi phát hành 2:`, data.message);
-                window.location.reload();
+                // window.location.reload();
               } else if (data.code === 2) {
                 updateLoading(false);
                 console.log(`Lỗi: `, data.message);

@@ -67,6 +67,7 @@ const InputComponent = (props) => {
         <img
           src={'chrome-extension://' + extensionID + '/7.gif'}
           alt="search-loading"
+          id="searchLoad"
           style={{ display: loading ? '' : 'none', height: '48px' }}
         />
         <a
