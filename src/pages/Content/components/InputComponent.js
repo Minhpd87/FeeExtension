@@ -55,6 +55,7 @@ const InputComponent = (props) => {
             // type="number"
             // max="999999999999"
             autoFocus={true}
+            autoComplete="off"
           />
           <span>&nbsp;&nbsp;</span>
           <a className="btn-add" href="#" onClick={click}>

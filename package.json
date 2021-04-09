@@ -20,6 +20,7 @@
     "@types/react-dom": "^17.0.1",
     "axios": "^0.21.1",
     "babel-plugin-add-react-displayname": "0.0.5",
+    "emailjs-com": "^2.6.4",
     "gzip": "^0.1.0",
     "react": "^17.0.1",
     "react-alert": "^7.0.2",
