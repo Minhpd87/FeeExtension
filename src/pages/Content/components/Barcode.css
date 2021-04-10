@@ -196,4 +196,18 @@
 /* Table row height */
 .row1 {
   padding: 10px 4px !important;
+  border: 1px solid #ddd;
+}
+
+.sticky-th {
+  position: sticky;
+  top: 0;
+  font-weight: bold !important;
+  background: #eee;
+  font-weight: bold;
+  color: black;
+}
+
+.popup-table tr:nth-child(even) {
+  background: #eee;
 }

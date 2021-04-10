@@ -2,6 +2,9 @@
 import React from 'react';
 
 import ItemComponent from './ItemComponent';
+import Popup from 'reactjs-popup';
+
+import PopUpList from './PopUpList';
 
 const ListComponent = (props) => {
   let {
@@ -33,6 +36,28 @@ const ListComponent = (props) => {
     return (
       <div>
         <div style={{ float: 'right' }}>
+          <Popup
+            trigger={
+              <a
+                href="#"
+                className="btn-add "
+                style={{ marginRight: '5px', display: '' }}
+              >
+                <i className="fa fa-list"></i> List tờ khai
+              </a>
+            }
+            modal
+            nested
+            contentStyle={{
+              margin: 'auto',
+              background: '#fff',
+              width: 'auto',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
+          >
+            <PopUpList />
+          </Popup>
           <a
             href="#"
             className={

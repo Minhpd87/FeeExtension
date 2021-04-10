@@ -219,13 +219,6 @@ const ItemComponent = (props) => {
         className="text-center row1"
         style={{ color: '#B146C2', fontWeight: 'bold' }}
       >
-        {/* <select>
-          <option value={item.MA_LOAI_THANH_TOAN}>
-            {item.MA_LOAI_THANH_TOAN}
-          </option>
-          <option value="CK247">CK247</option>
-          <option value="CK">CK</option>
-        </select> */}
         {item.MA_LOAI_THANH_TOAN}
       </td>
 

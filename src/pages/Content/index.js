@@ -512,6 +512,17 @@ const ContentReact = () => {
               <span className="red">\</span> : Switch chít focus
             </span>
             <BarcodeComponent />
+            <div>
+              <p className="bold red" style={{ margin: '10px' }}>
+                Notice:
+              </p>
+              <li>
+                Sau khi click xóa hết, các tờ khai trong danh sách vừa xóa sẽ
+                được thêm vào List tờ khai. Để danh sách tờ khai được đủ thì hãy
+                xóa hết after each lần thu.
+              </li>
+              <li>List tờ khai tự động xóa khi sang ngày mới.</li>
+            </div>
           </div>
         </div>
         <CapNhatPage />

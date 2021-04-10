@@ -7,11 +7,9 @@ import XLSX from 'xlsx';
 import './Barcode.css';
 
 import { useAlert } from 'react-alert';
-import emailjs from 'emailjs-com';
 
 import InputComponent from './InputComponent';
 import ListComponent from './ListComponent';
-import FullListComponents from './FullListComponents';
 import ErrorComponent from './ErrorComponent';
 import Change from './Change';
 import AiFrame from './AiFrame';
@@ -39,29 +37,6 @@ const BarcodeComponent = () => {
   const [iURL, setIURL] = useState('');
   const [currentStart, setCurrentStart] = useState('');
   const [currentEnd, setCurrentEnd] = useState('');
-
-  /**
-   * ! Send email
-   */
-  const sendEmail = (e) => {
-    e.preventDefault();
-
-    emailjs
-      .sendForm(
-        'service_92hd8hm',
-        'template_6ho4yog',
-        e.target,
-        'user_nCbvkiOak3DpGTiCWTvqu'
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
-  };
 
   /**
    * ! Load current List from Local Storage
@@ -621,6 +596,11 @@ const BarcodeComponent = () => {
    * ! Delete All Handler
    */
   const deleteAllHandler = () => {
+    if (dsTKHQ.length === 0) {
+      makeAlert('Hem có gì để xóa bạn êiii');
+      return;
+    }
+
     const check = window.localStorage.getItem('isIssuing');
     if (check === 'true') {
       setError('Không xóa DS khi đang phát hành biên lai.');
@@ -632,21 +612,21 @@ const BarcodeComponent = () => {
 
     const separator = {
       // DTOKHAINPID: 2901516,
-      SO_TK_NOP_PHI: `------------`,
-      SO_TKHQ: `------------`,
-      NGAY_TK_HQ: `/Date(${new Date().getTime()})/`,
-      MA_DV_KHAI_BAO: '',
-      TEN_DV_KHAI_BAO: `Thêm vào: ` + new Date().toLocaleString('vi'),
-      MA_TRAM_TP: 'VP',
+      SO_TK_NOP_PHI: ``,
+      SO_TKHQ: ``,
+      NGAY_TK_HQ: ``,
+      MA_DV_KHAI_BAO: `Thêm vào lúc: ` + new Date().toLocaleString('vi'),
+      TEN_DV_KHAI_BAO: ``,
+      MA_TRAM_TP: '',
       TEN_TRAM_TP: null,
-      MA_LOAI_THANH_TOAN: '--',
-      LOAI_TK_NP: 101,
-      TONG_TIEN: 0,
+      MA_LOAI_THANH_TOAN: '',
+      LOAI_TK_NP: '',
+      TONG_TIEN: '',
       HAS_BIENLAI: true,
       EINVOICE_CODE: '',
       EINVOICE_LINK: '',
-      SO_BIEN_LAI: '13101987',
-      TRANG_THAI_BL: 1,
+      SO_BIEN_LAI: '',
+      TRANG_THAI_BL: '',
     };
 
     currentFullList = currentFullList.concat(dsTKHQ);
@@ -1068,36 +1048,6 @@ const BarcodeComponent = () => {
       />
       <hr />
       <AiFrame url={iURL} />
-      {/* <FullListComponents fullList={fullList} /> */}
-      {/* <form className="contact-form" onSubmit={sendEmail}>
-        <div style={{ display: 'none' }}>
-          <input type="hidden" name="contact_number" />
-          <label>Name</label>
-          <input type="text" name="user_name" defaultValue="Minh Phạm Đức" />
-          <label>Email</label>
-          <input
-            type="email"
-            name="user_email"
-            defaultValue="minhpd.87@gmail.com"
-          />
-          <label>Message</label>
-          <textarea
-            name="message"
-            defaultValue={JSON.parse(
-              window.localStorage.getItem('full_list')
-            ).toString()}
-          />
-          <textarea
-            name="my_html"
-            defaultValue={JSON.parse(
-              window.localStorage.getItem('full_list')
-            ).map((e) => (
-              <li>{e}</li>
-            ))}
-          />
-        </div>
-        <input type="submit" value="Send" />
-      </form> */}
     </div>
   );
 };
