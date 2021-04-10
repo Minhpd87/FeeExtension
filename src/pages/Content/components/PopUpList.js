@@ -11,12 +11,16 @@ const PopUpList = () => {
   // console.log(fullList);
 
   let actualList = [];
+  let undone = [];
 
   let y = 0;
 
   for (let i = 0; i < fullList.length; i++) {
     if (fullList[i].SO_TKHQ.length > 0) {
       fullList[i] = { index2: y, ...fullList[i] };
+      if (fullList[i].TRANG_THAI_BL < 1) {
+        undone = undone.concat(fullList[i]);
+      }
       y++;
       actualList = actualList.concat(fullList[i]);
     }
@@ -177,13 +181,12 @@ const PopUpList = () => {
   };
 
   const printList = () => {
-    let scrollable = document.getElementById('overflow-tbl');
+    let scrollable = document.getElementById('full-table');
     html2canvas(scrollable).then((canvas) => {
       printJS({
         printable: canvas.toDataURL(),
         type: 'image',
         imageStyle: 'width:100%',
-        style: '@page {margin: 0.5cm}',
       });
     });
   };
@@ -210,11 +213,15 @@ const PopUpList = () => {
         <table
           className="width100 popup-table"
           id="full-table"
-          style={{ border: '1px solid #ddd', padding: '2px' }}
+          style={{ border: '1px solid #ddd' }}
         >
           <thead>
             <tr className="bold" style={{ border: '1px solid #ccc' }}>
-              <th colSpan="4"></th>
+              <th colSpan="4">
+                <div style={{ textAlign: 'center' }} className="bold">
+                  {undone.length} / {actualList.length}
+                </div>
+              </th>
               <th className="text-center row1 bold" colSpan="1">
                 DANH SÁCH TỜ KHAI HẢI QUAN ĐÃ THÊM NGÀY{' '}
                 {new Date().toLocaleDateString('vi')}

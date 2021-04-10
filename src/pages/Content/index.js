@@ -522,6 +522,10 @@ const ContentReact = () => {
                 xóa hết after each lần thu.
               </li>
               <li>List tờ khai tự động xóa khi sang ngày mới.</li>
+              <li>
+                Danh sách tờ khai as is at thời điểm lúc phát hành --> nếu tự bị
+                nhảy BL hay mất BL thì sẽ do hệ thống.
+              </li>
             </div>
           </div>
         </div>
