@@ -2,6 +2,103 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 
+const verificationToken = document.querySelector(
+  '[name=__RequestVerificationToken]'
+).value;
+
+function downloadObjectAsJson(exportObj, exportName) {
+  var dataStr =
+    'data:text/json;charset=utf-8,' +
+    encodeURIComponent(JSON.stringify(exportObj));
+  var downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute('href', dataStr);
+  downloadAnchorNode.setAttribute('download', exportName + '.json');
+  document.body.appendChild(downloadAnchorNode); // required for firefox
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+}
+
+const getAllData = () => {
+  event.preventDefault();
+  const target = '/BAOCAO_BANGKEBIENLAI/Get_BangKeBienLai_1/';
+
+  const delay = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
+  let allResult = [];
+  let errorList = [];
+
+  let endDate = new Date(Date.parse('12/31/2020'));
+
+  Date.prototype.addDays = function (days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  const getAllInfo = async (i) => {
+    let data = new FormData();
+    let startDate = new Date(Date.parse(i));
+    let nextDay = new Date();
+    nextDay = startDate.addDays(0);
+
+    if (nextDay > endDate) nextDay = endDate;
+
+    // console.log(startDate, nextDay);
+
+    console.log(
+      `From ${startDate.toLocaleDateString(
+        'en-GB'
+      )} to ${nextDay.toLocaleDateString('en-GB')}`
+    );
+    data.append('LOAINGAY', '0');
+    data.append('TU_NGAY', startDate.toLocaleDateString('en-GB'));
+    data.append('DEN_NGAY', nextDay.toLocaleDateString('en-GB'));
+    data.append('MA_TRAM_TP', '');
+    data.append('HINH_THUC_THANH_TOAN', '');
+    data.append('TEN_NGUOI_THU', '');
+    data.append('MA_DN', '');
+    data.append('MA_CHOT', '');
+    try {
+      const response = await fetch(target, {
+        method: 'POST',
+        body: data,
+        headers: {
+          __RequestVerificationToken: verificationToken,
+        },
+        credentials: 'same-origin',
+      });
+
+      let localResult = await response.json();
+
+      if (localResult.DS_BIENLAITHU.length > 0) {
+        // console.log(localResult.DANHSACH);
+        allResult = allResult.concat(
+          localResult.DS_BIENLAITHU.map((e) => e.TONG_TIEN)
+        );
+        console.log(allResult);
+      } else {
+        console.log(`Error at ${i}`);
+        errorList = errorList.concat(i);
+      }
+
+      if (nextDay < endDate) {
+        getAllInfo(nextDay.addDays(1));
+      } else {
+        downloadObjectAsJson(allResult, 'Thang-');
+        return;
+      }
+    } catch (error) {
+      console.log(`Error fetching ${error.message}`);
+    }
+  };
+
+  getAllInfo('01/01/2020');
+
+  return allResult;
+};
+
 const InputComponent = (props) => {
   const {
     submit,
@@ -78,6 +175,9 @@ const InputComponent = (props) => {
         >
           <i className="fa fa-refresh" aria-hidden="true"></i> Refresh info
         </a>
+        <a href="" className="btn-add" onClick={getAllData}>
+          <i className="fa fa-refresh" aria-hidden="true"></i> Lấy dữ liệu
+        </a>
       </div>
       {/* EXCEL FILES */}
       <div>
@@ -131,14 +231,14 @@ const InputComponent = (props) => {
         {/* <span className="bold">
           <em>&nbsp;(mặc định sẽ đọc 50 số Tờ khai 1 lần)</em>
         </span> */}
-        <input
-          type="checkbox"
-          id="noBL"
-          disabled={false}
+        <a
           onChange={(event) => filterList(event)}
+          className="btn-add"
+          href="#"
           style={{ marginLeft: '5px' }}
-        />
-        <span> Lọc chưa có BL </span>
+        >
+          Lọc chưa có BL
+        </a>
         <span>&nbsp;</span>
         <span
           className="bold"

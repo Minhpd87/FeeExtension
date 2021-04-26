@@ -2,8 +2,6 @@ import React from 'react';
 
 import 'reactjs-popup/dist/index.css';
 import printJS from 'print-js';
-import TableToExcel from '@linways/table-to-excel';
-import html2canvas from 'html2canvas';
 
 const PopUpList = () => {
   const fullList = JSON.parse(window.localStorage.getItem('full_list')) || [];
@@ -182,13 +180,15 @@ const PopUpList = () => {
 
   const printList = () => {
     let scrollable = document.getElementById('full-table');
-    html2canvas(scrollable).then((canvas) => {
-      printJS({
-        printable: canvas.toDataURL(),
-        type: 'image',
-        imageStyle: 'width:100%',
-      });
+    scrollable.style.overflow = '';
+    printJS({
+      printable: scrollable,
+      type: 'html',
+      targetStyles: ['*'],
+      style: '@page {margin: 1cm}',
+      font_size: '12px;',
     });
+    scrollable.style.overflow = 'scroll';
   };
 
   return (

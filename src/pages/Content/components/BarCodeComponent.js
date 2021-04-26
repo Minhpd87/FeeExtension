@@ -158,22 +158,22 @@ const BarcodeComponent = () => {
    * ! Filter List
    */
   const filterList = (event) => {
-    if (event.target.checked === true) {
-      const currentList = JSON.parse(
-        window.localStorage.getItem('danh_sach_tk')
-      );
-      let filtered = [];
-      for (let i = 0; i < currentList.length; i++) {
-        if (currentList[i].TRANG_THAI_BL < 1) {
-          filtered = filtered.concat(currentList[i]);
-        }
+    // if (event.target.checked === true) {
+    event.preventDefault();
+    const currentList = JSON.parse(window.localStorage.getItem('danh_sach_tk'));
+    let filtered = [];
+    for (let i = 0; i < currentList.length; i++) {
+      if (currentList[i].TRANG_THAI_BL < 1) {
+        filtered = filtered.concat(currentList[i]);
       }
-      setDS(filtered);
-    } else {
-      const arr = () => JSON.parse(window.localStorage.getItem('danh_sach_tk'));
-      console.log(arr);
-      setDS(arr);
     }
+    setDS(filtered);
+    window.localStorage.setItem('danh_sach_tk', JSON.stringify(filtered));
+    // } else {
+    //   const arr = () => JSON.parse(window.localStorage.getItem('danh_sach_tk'));
+    //   console.log(arr);
+    //   setDS(arr);
+    // }
   };
 
   /**
@@ -360,7 +360,7 @@ const BarcodeComponent = () => {
         updateIssueStatus(i, `Refreshing...`);
 
         const element = arr[i];
-        delay(200).then(async () => {
+        delay(1).then(async () => {
           try {
             updateLoading(true);
             let data = new FormData();
@@ -382,6 +382,9 @@ const BarcodeComponent = () => {
               );
               newElement =
                 elementInfo.DANHSACH[elementInfo.DANHSACH.length - 1];
+              newElement.TEN_DV_KHAI_BAO =
+                newElement.TEN_DV_KHAI_BAO +
+                ` ${new Date().toLocaleTimeString('vi')}`;
               updateDS3(newElement);
               updateLoading(false);
               updateIssueStatus(i, ``);
@@ -832,6 +835,7 @@ const BarcodeComponent = () => {
                       // getInfo(item.SO_TKHQ);
                       // console.log(item.SO_TKHQ);
                       window.alert(`Lỗi phát hành biên lai: ${data.message}`);
+                      window.localStorage.setItem('isIssuing', 'false');
                     } else {
                       invoiceNum = data.EINVOICE_OUT.InvoiceNumber;
                       eInvoiceLink = data.EINVOICE_OUT.InvoiceKey;
@@ -851,17 +855,20 @@ const BarcodeComponent = () => {
                         TRAMTP
                       );
                       updateLoading(false);
+                      window.localStorage.setItem('isIssuing', 'false');
                     }
                   });
               } else if (data.code === 0) {
                 console.log(data);
                 updateLoading(false);
+                window.localStorage.setItem('isIssuing', 'false');
                 setError(data.message);
                 updateIssueStatus(index, data.message);
                 window.alert(`Lỗi phát hành 2:`, data.message);
                 // window.location.reload();
               } else if (data.code === 2) {
                 updateLoading(false);
+                window.localStorage.setItem('isIssuing', 'false');
                 console.log(`Lỗi: `, data.message);
               }
             });
@@ -937,11 +944,13 @@ const BarcodeComponent = () => {
             } else {
               //There is error in cập nhật so không lưu lại
               setError(`BL00000 hoặc đã có Biên lai`);
+              console.log(`Error issuing at: ${index} of ${item}`);
               updateIssueStatus(index, 'F5 Info');
               makeAlert('BL00000 hoặc đã có Biên lai. Reload if error persits');
               // const itemInfo = async () => {
               const refreshButton = document.getElementById(`f5-btn-${index}`);
               updateLoading(false);
+              window.localStorage.setItem('isIssuing', 'false');
               refreshButton.click();
             }
             updateIssueStatus(index, 'Đang lưu');
@@ -970,6 +979,7 @@ const BarcodeComponent = () => {
         }
       } catch (e) {
         updateLoading(false);
+        window.localStorage.setItem('isIssuing', 'false');
         window.alert(e.message);
       }
     }

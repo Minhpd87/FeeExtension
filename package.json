@@ -1,6 +1,6 @@
 {
   "name": "fee-extension",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Chrome Extension that adds extra features to the thuphi.haiphong.gov.vn's website, re-written from old version",
   "license": "MIT",
   "repository": {
@@ -22,7 +22,7 @@
     "axios": "^0.21.1",
     "babel-plugin-add-react-displayname": "0.0.5",
     "gzip": "^0.1.0",
-    "html2canvas": "*",
+    "jspdf": "^2.3.1",
     "print-js": "^1.6.0",
     "react": "^17.0.1",
     "react-alert": "^7.0.2",
